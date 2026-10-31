@@ -213,3 +213,50 @@ running and the final check used `E2E_CHROMIUM_CHANNEL=chrome`.
 Railway deployment and its separate cloud OAuth client/callback remain pending
 assignment of the temporary Railway hostname. Local and cloud should use the
 same policy/YAML with environment-specific URLs, credentials, and databases.
+
+## Isolated Railway deployment — 2026-10-31
+
+Committed the completed local pilot first as `23aeb6d94`, then committed and
+pushed Railway packaging/configuration on `codex/pilot-feature-config`. The live
+app is pinned to `7bcc634ce2cf55e48bc954bb842cffe2580fed7f`, deployment
+`98c67ab4-4884-4970-8792-c0fc8246826b` (**SUCCESS**).
+
+- Project: `125a4dd3-235b-4478-b888-0dfb7444fcee`, **NEAR Foundation LibreChat**,
+  in the NEAR Foundation workspace. Production environment:
+  `75f9a70b-319f-4e21-832d-685997b3e40b`.
+- URL: <https://librechat-production-5b45.up.railway.app>.
+- LibreChat, MongoDB, Redis, pgvector, and RAG all report **SUCCESS**, one replica
+  each in the Netherlands region. Only LibreChat has a public domain; none of
+  the dependencies has a public domain or TCP proxy. Four separate volumes persist
+  app files/state and the three databases. Existing Railway projects were not modified.
+- The image includes the canonical YAML. Runtime defaults, Google policy, and RAG
+  settings are shared tracked files. Cloud data and encryption/session keys are
+  separate from local Docker. The local development password override is excluded.
+- As explicitly approved, cloud code execution is pending a separate KVM host.
+  A startup profile turns the same analysis preset into ordinary **NEAR AI Chat**
+  and removes its code capability. Other configuration remains unchanged.
+- Created a separate Internal Google Web client for Railway, registered its HTTPS
+  origin and `/oauth/google/callback`, stored credentials privately, and verified
+  real company Google sign-in into the cloud app. Password login and registration
+  each returned HTTP 403. Public `/health` returned 200.
+- A real shared-key NEAR chat returned `RAILWAY_NEAR_OK`. That conversation and
+  the signed-in session survived the final redeploy. The final default preset then
+  returned `RAILWAY_FINAL_OK`; NEAR attestation and signed-reply controls appeared.
+  Prompts/bookmarks and code execution controls were absent.
+- Configured NEAR `Qwen/Qwen3-Embedding-0.6B` for RAG with authenticated internal
+  access. A direct synthetic embedding and local RAG embedding both returned 1024
+  dimensions. The local vector table was empty before switching models. Cloud RAG
+  initialized successfully, but no cloud end-to-end file-search test is claimed.
+- Cloud file upload/persistence verification was blocked by the browser extension's
+  file URL permission. Native picker inspection stalled. No account-wide Railway
+  SSH key was registered to work around missing CLI SSH access. Volume attachment
+  and chat persistence were verified; uploaded file persistence and a restore drill
+  remain unverified. Cloud voice/image inference and transaction collection contents
+  were not independently retested; their shared configuration remains enabled.
+- Shared-config profile assertions, script syntax, formatting, Compose configuration,
+  and diff checks passed. Lighthouse passed (median LCP 3531 ms, CLS 0.018, TBT 53 ms).
+  No CI or independent review result is claimed.
+
+Deployment IDs and the runbook are in `infra/railway/`. Backup scheduling, restore
+qualification, code execution hosting, and end-to-end upload checks remain before
+a broad employee rollout.

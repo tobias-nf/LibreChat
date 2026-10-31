@@ -96,6 +96,12 @@ verified company email and Workspace identity. Its ID and seven conversations
 were retained. Both prior password sessions were retired, credentials stamped,
 and auth caches invalidated. There were no existing Agents API keys.
 
+The isolated Railway pilot is now at
+<https://librechat-production-5b45.up.railway.app>. Its separate Google Web client
+uses that origin and `/oauth/google/callback`. See `infra/railway/README.md` for
+the service IDs, shared configuration, persistence, secrets, and release process.
+Cloud code execution is intentionally pending; local Docker retains the sandbox.
+
 Docker's automatic address pools were full on this machine, so the project uses
 the verified free subnet `10.254.243.0/24`. Set `LOCAL_DOCKER_SUBNET` in `.env`
 to another free private subnet if your network layout changes.
