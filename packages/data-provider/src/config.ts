@@ -2655,6 +2655,8 @@ const speechTab = z
         z.object({
           /** Provider names remain valid for backward compatibility and are normalized for clients. */
           engineSTT: z.enum(['browser', 'external', 'openai', 'azureOpenAI']).optional(),
+          /** Convert microphone recordings locally for providers that reject browser containers. */
+          audioFormat: z.enum(['native', 'wav']).default('native'),
           languageSTT: z.string().optional(),
           autoTranscribeAudio: z.boolean().optional(),
           decibelValue: z.number().optional(),

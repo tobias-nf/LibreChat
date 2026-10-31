@@ -1,0 +1,24 @@
+FROM python:3.14.4-slim-bookworm AS python
+COPY requirements.lock /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Built from the pinned official api/Dockerfile, target sandbox-build.
+FROM librechat-sandbox-runner:base
+COPY --from=python /usr/local /pkgs/python/3.14.4
+COPY upstream/docker/python-runtime /tmp/python-runtime
+ENV LD_LIBRARY_PATH=/pkgs/python/3.14.4/lib
+RUN /pkgs/python/3.14.4/bin/python3 /tmp/python-runtime/install.py && \
+    printf '%s\n' '{"language":"python","version":"3.14.4","aliases":["py","py3","python3"]}' > /pkgs/python/3.14.4/pkg-info.json && \
+    printf '#!/bin/sh\nexec /pkgs/python/3.14.4/bin/python3 "$@"\n' > /pkgs/python/3.14.4/run && \
+    printf '%s\n' 'LD_LIBRARY_PATH=/pkgs/python/3.14.4/lib' 'PATH=/pkgs/python/3.14.4/bin:/usr/bin:/bin' 'OPENBLAS_NUM_THREADS=1' 'OMP_NUM_THREADS=1' > /pkgs/python/3.14.4/.env && \
+    chmod 755 /pkgs/python/3.14.4/run && \
+    touch /pkgs/python/3.14.4/.package-installed && \
+    mkdir -p /pkgs/bash/5.2.0 && \
+    printf '%s\n' '{"language":"bash","version":"5.2.0","aliases":["sh"]}' > /pkgs/bash/5.2.0/pkg-info.json && \
+    printf '#!/bin/sh\nexec /bin/bash "$@"\n' > /pkgs/bash/5.2.0/run && \
+    printf '%s\n' 'LD_LIBRARY_PATH=/pkgs/python/3.14.4/lib' 'PATH=/pkgs/python/3.14.4/bin:/usr/bin:/bin' 'OPENBLAS_NUM_THREADS=1' 'OMP_NUM_THREADS=1' > /pkgs/bash/5.2.0/.env && \
+    chmod 755 /pkgs/bash/5.2.0/run && \
+    touch /pkgs/bash/5.2.0/.package-installed && \
+    rm -rf /tmp/python-runtime
+ENV KVM_ENABLED=false SANDBOX_USE_CGROUPV2=false SANDBOX_REMOVE_UMOUNT_AFTER_STARTUP=false
+ENTRYPOINT ["/sandbox_api/entrypoint.sh"]

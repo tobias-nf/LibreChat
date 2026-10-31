@@ -1,0 +1,232 @@
+name: librechat-sandbox
+
+x-health: &health
+  interval: 10s
+  timeout: 5s
+  start_period: 30s
+  retries: 12
+
+x-service: &service
+  restart: unless-stopped
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  networks: [backend]
+  mem_limit: 512m
+  pids_limit: 128
+
+x-environment: &environment
+  LOCAL_MODE: 'false'
+  CODEAPI_HARDENED_SANDBOX_MODE: 'true'
+  CODEAPI_AUTH_PROVIDER: librechat-jwt
+  CODEAPI_JWT_JWKS_JSON: '${CODEAPI_JWT_JWKS_JSON}'
+  CODEAPI_JWT_ISSUER: librechat
+  CODEAPI_JWT_AUDIENCE: codeapi
+  CODEAPI_JWT_ALLOWED_ALGS: EdDSA
+  CODEAPI_JWT_SINGLE_TENANT_ID: near-foundation-pilot
+  # No remote-worker enrollment routes in this stateless deployment.
+  CODEAPI_BRIDGE_AUTH_MODE: static
+  CODEAPI_BRIDGE_DYNAMIC_WORKERS: 'false'
+  CODEAPI_EXECUTION_PROFILE: default
+  CODEAPI_INTERNAL_SERVICE_TOKEN: '${CODEAPI_INTERNAL_SERVICE_TOKEN}'
+  REDIS_HOST: redis
+  REDIS_PASSWORD: '${SANDBOX_REDIS_PASSWORD}'
+  SANDBOX_ENDPOINT: http://runner:2000/api/v2
+  EGRESS_GATEWAY_URL: http://egress:3190
+  FILE_SERVER_URL: http://files:3000
+  TOOL_CALL_SERVER_URL: http://tools:3033
+  JOB_TIMEOUT: '60000'
+  MAX_REQUESTS: '10'
+
+services:
+  code-api:
+    <<: *service
+    image: librechat-code-api:local
+    build: { context: ./upstream, dockerfile: service/Dockerfile, target: api }
+    environment:
+      <<: *environment
+      SERVICE_PORT: '3112'
+    networks: [control, backend]
+    healthcheck:
+      <<: *health
+      test:
+        [
+          CMD,
+          bun,
+          -e,
+          "fetch('http://localhost:3112/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+    depends_on: [redis, files, tools]
+  worker:
+    <<: *service
+    image: librechat-code-worker:local
+    build: { context: ./upstream, dockerfile: service/Dockerfile, target: worker }
+    environment:
+      <<: *environment
+      CODEAPI_EXECUTION_MANIFEST_PRIVATE_KEY: '${CODEAPI_EXECUTION_MANIFEST_PRIVATE_KEY}'
+      PYTHON_CONCURRENCY: '1'
+      OTHER_CONCURRENCY: '1'
+    networks: [backend, execution]
+    healthcheck:
+      <<: *health
+      test:
+        [
+          CMD,
+          bun,
+          -e,
+          "fetch('http://localhost:3113/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+    depends_on: [redis, runner, egress]
+  files:
+    <<: *service
+    image: librechat-code-files:local
+    build: { context: ./upstream, dockerfile: service/Dockerfile, target: production }
+    environment:
+      <<: *environment
+      FILE_SERVER_PORT: '3000'
+      MINIO_BUCKET: analysis
+      MINIO_ENDPOINT: storage
+      MINIO_PORT: '9000'
+      MINIO_USE_SSL: 'false'
+      MINIO_ACCESS_KEY: '${MINIO_ROOT_USER}'
+      MINIO_SECRET_KEY: '${MINIO_ROOT_PASSWORD}'
+    healthcheck:
+      <<: *health
+      test:
+        [
+          CMD,
+          bun,
+          -e,
+          "fetch('http://localhost:3000/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+    depends_on: [redis, storage]
+  tools:
+    <<: *service
+    image: librechat-code-tools:local
+    build:
+      { context: ./upstream, dockerfile: service/Dockerfile.tool-call-server, target: production }
+    environment:
+      <<: *environment
+      TOOL_CALL_SERVER_PORT: '3033'
+    healthcheck:
+      <<: *health
+      test:
+        [
+          CMD,
+          bun,
+          -e,
+          "fetch('http://localhost:3033/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+    depends_on: [redis]
+  egress:
+    <<: *service
+    image: librechat-code-egress:local
+    build: { context: ./upstream, dockerfile: service/Dockerfile, target: egress-gateway }
+    environment:
+      <<: *environment
+      CODEAPI_EGRESS_LEDGER_REQUIRED: 'true'
+      CODEAPI_EGRESS_GRANT_SECRET: '${CODEAPI_EGRESS_GRANT_SECRET}'
+      EGRESS_GATEWAY_FILE_SERVER_URL: http://files:3000
+      EGRESS_GATEWAY_TOOL_CALL_SERVER_URL: http://tools:3033
+    healthcheck:
+      <<: *health
+      test:
+        [
+          CMD,
+          bun,
+          -e,
+          "fetch('http://localhost:3190/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+    networks: [backend, execution]
+    depends_on: [redis, files, tools]
+  runner:
+    image: librechat-sandbox-runner:local
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ['/tmp:size=1g,mode=1777']
+    networks: [execution]
+    # Official macOS development mode. No privileged mode, host paths, or Docker socket.
+    cap_drop: [ALL]
+    cap_add:
+      [
+        SYS_ADMIN,
+        SYS_CHROOT,
+        SYS_PTRACE,
+        SETUID,
+        SETGID,
+        NET_ADMIN,
+        DAC_OVERRIDE,
+        DAC_READ_SEARCH,
+        CHOWN,
+        FOWNER,
+        FSETID,
+        KILL,
+        SETFCAP,
+        MKNOD,
+      ]
+    security_opt: [seccomp=./upstream/seccomp/nsjail.json]
+    cpus: 2
+    mem_limit: 2g
+    pids_limit: 256
+    environment:
+      CODEAPI_HARDENED_SANDBOX_MODE: 'true'
+      SANDBOX_REQUIRE_EGRESS_MANIFEST: 'true'
+      SANDBOX_EXECUTION_MANIFEST_PUBLIC_KEY: '${SANDBOX_EXECUTION_MANIFEST_PUBLIC_KEY}'
+      SANDBOX_RUN_TIMEOUT: '30000'
+      SANDBOX_RUN_CPU_TIME: '30000'
+      SANDBOX_MAX_CONCURRENT_JOBS: '1'
+      SANDBOX_MAX_PROCESS_COUNT: '64'
+      SANDBOX_OUTPUT_MAX_SIZE: '65536'
+      SANDBOX_ALLOWED_LOCAL_NETWORK_PORT: '3190'
+      SANDBOX_FORWARD_TARGET: egress:3190
+      EGRESS_GATEWAY_URL: http://egress:3190
+      SANDBOX_PACKAGES_DIRECTORY: /pkgs
+      SANDBOX_USE_CGROUPV2: 'false'
+      SANDBOX_REMOVE_UMOUNT_AFTER_STARTUP: 'false'
+      SANDBOX_LOG_LEVEL: info
+    healthcheck:
+      <<: *health
+      test:
+        [
+          CMD,
+          bun,
+          -e,
+          "fetch('http://localhost:2000/api/v2/runtimes').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+  redis:
+    <<: *service
+    user: '999:999'
+    image: redis:7.4-alpine
+    environment: { REDIS_PASSWORD: '${SANDBOX_REDIS_PASSWORD}' }
+    command: [sh, -c, 'exec redis-server --requirepass "$$REDIS_PASSWORD" --appendonly yes']
+    volumes: [redis-data:/data]
+    healthcheck:
+      <<: *health
+      test: [CMD-SHELL, 'REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG']
+  storage:
+    <<: *service
+    image: rustfs/rustfs@sha256:ed9210d6411d77ffceb70d94b964a3cb7d225983368bc25bebe01e995293dcc2
+    command: [/data]
+    environment:
+      RUSTFS_ACCESS_KEY: '${MINIO_ROOT_USER}'
+      RUSTFS_SECRET_KEY: '${MINIO_ROOT_PASSWORD}'
+      RUSTFS_ADDRESS: ':9000'
+      RUSTFS_CONSOLE_ENABLE: 'false'
+      RUSTFS_OBS_LOGGER_LEVEL: error
+    volumes: [object-data:/data]
+    healthcheck:
+      <<: *health
+      test: [CMD, curl, -fsS, http://localhost:9000/health]
+
+networks:
+  control:
+    external: true
+    name: librechat-setup_code-control
+  backend:
+    internal: true
+    ipam: { config: [{ subnet: '${LOCAL_CODE_BACKEND_SUBNET:-10.254.246.0/24}' }] }
+  execution:
+    internal: true
+    ipam: { config: [{ subnet: '${LOCAL_CODE_EXECUTION_SUBNET:-10.254.247.0/24}' }] }
+volumes:
+  redis-data:
+  object-data:

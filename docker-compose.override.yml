@@ -8,10 +8,22 @@ services:
     build:
       context: .
       target: node
+    env_file:
+      - ./infra/google-login.env
     environment:
       SCHEDULES_SINGLE_PROCESS: 'true'
       APP_TITLE: 'NEAR Foundation AI'
       NEAR_AI_VERIFY_URL: 'https://cloud.near.ai/verify'
+      USE_REDIS: 'true'
+      USE_REDIS_STREAMS: 'true'
+      REDIS_URI: redis://redis:6379
+      IMAGE_GEN_OAI_API_KEY: '${NEARAI_API_KEY}'
+      IMAGE_GEN_OAI_BASEURL: https://cloud-api.near.ai/v1
+      IMAGE_GEN_OAI_MODEL: black-forest-labs/FLUX.2-klein-4B
+    networks: [default, code-control]
+    depends_on:
+      redis:
+        condition: service_healthy
     volumes:
       - ./librechat.local.yaml:/app/librechat.yaml:ro
     ports: !override
@@ -45,8 +57,25 @@ services:
     container_name: librechat-setup-vectordb
   rag_api:
     container_name: librechat-setup-rag
+  redis:
+    container_name: librechat-setup-redis
+    image: redis:7.4-alpine
+    command: [redis-server, --appendonly, 'yes']
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 networks:
+  code-control:
+    internal: true
+    ipam:
+      config:
+        - subnet: '${LOCAL_CODE_CONTROL_SUBNET:-10.254.245.0/24}'
   default:
     ipam:
       config:
@@ -54,3 +83,4 @@ networks:
 
 volumes:
   mongodb-data:
+  redis-data:

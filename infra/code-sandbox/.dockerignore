@@ -1,0 +1,6 @@
+.env
+secrets
+upstream/.git
+upstream/data
+**/node_modules
+**/.DS_Store

@@ -2,6 +2,10 @@
 version: 1.3.18
 cache: true
 
+registration:
+  socialLogins: [google]
+  allowedDomains: [near.foundation]
+
 transactions:
   enabled: true
 
@@ -153,8 +157,68 @@ interface:
   customWelcome: 'NEAR Foundation AI'
   contextUsage: true
   contextCost: true
+  prompts:
+    use: false
+    create: false
+    share: false
+    public: false
+  bookmarks: false
+  schedules:
+    use: true
+    create: true
+    maxPerUser: 10
+    minIntervalMinutes: 60
+    autoDisableAfterFailures: 5
+    fireConcurrency: 2
+  remoteAgents:
+    use: true
+    create: true
+    share: true
+    public: false
+
+speech:
+  speechTab:
+    speechToText:
+      engineSTT: external
+      audioFormat: wav
+      autoTranscribeAudio: true
+    textToSpeech: false
+  stt:
+    openai:
+      url: https://cloud-api.near.ai/v1/audio/transcriptions
+      apiKey: '${NEARAI_API_KEY}'
+      model: openai/whisper-large-v3
+
+modelSpecs:
+  list:
+    - name: nearai-data-analysis
+      label: Data analysis
+      description: Analyze uploaded data and create charts or spreadsheets with isolated Python.
+      executeCode: true
+      runInBackground: false
+      preset:
+        endpoint: nearai
+        model: z-ai/glm-5.3-flash
 
 endpoints:
+  agents:
+    checkpointer:
+      type: mongo
+    capabilities:
+      - deferred_tools
+      - execute_code
+      - file_search
+      - web_search
+      - artifacts
+      - subagents
+      - actions
+      - context
+      - skills
+      - memory
+      - ask_user_question
+      - tools
+      - ocr
+      - run_in_background
   custom:
     - name: nearai
       apiKey: '${NEARAI_API_KEY}'

@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { useToastContext } from '@librechat/client';
+import { useGetCustomConfigSpeechQuery } from 'librechat-data-provider/react-query';
 import { useSpeechToTextMutation } from '~/data-provider';
+import { convertAudioToWav } from '~/utils/audio';
+import useLocalize from '~/hooks/useLocalize';
 import store from '~/store';
 
 export const getBestSupportedMimeType = (
@@ -41,6 +44,10 @@ const useSpeechToTextExternal = (
   autoSendText: number,
 ) => {
   const { showToast } = useToastContext();
+  const localize = useLocalize();
+  const { data: speechConfig } = useGetCustomConfigSpeechQuery();
+  const conversionIdRef = useRef(0);
+  const convertingRef = useRef(false);
   const audioStream = useRef<MediaStream | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -114,47 +121,54 @@ const useSpeechToTextExternal = (
 
     if (audioChunksRef.current.length > 0) {
       const audioBlob = new Blob(audioChunksRef.current, { type: audioMimeTypeRef.current });
-      const fileExtension = getFileExtension(audioMimeTypeRef.current);
-
       audioChunksRef.current = [];
-
-      const formData = new FormData();
-      formData.append('audio', audioBlob, `audio.${fileExtension}`);
-      if (languageSTT) {
-        formData.append('language', languageSTT);
-      }
       setIsRequestBeingMade(true);
       cleanup();
       const takeId = recordingTakeIdRef.current;
-      processAudio(formData, {
-        onSuccess: (data) => {
-          if (!isMountedRef.current) {
-            return;
-          }
-          const extractedText = data.text;
-          setText(extractedText, takeId);
-          setIsRequestBeingMade(false);
-          onTranscriptionSettled(takeId);
-          if (autoSendText > -1 && speechToText && extractedText.length > 0) {
-            if (autoSendTimerRef.current != null) {
-              clearTimeout(autoSendTimerRef.current);
-              autoSendTimerRef.current = null;
+      const conversionId = ++conversionIdRef.current;
+      const isCurrentTake = () => isMountedRef.current && conversionId === conversionIdRef.current;
+      const fail = () => {
+        if (!isCurrentTake()) return;
+        convertingRef.current = false;
+        showToast({ message: localize('com_error_audio_transcription'), status: 'error' });
+        setIsRequestBeingMade(false);
+        onTranscriptionSettled(takeId);
+      };
+      const submit = (audio: Blob) => {
+        if (!isCurrentTake()) return;
+        convertingRef.current = false;
+        const formData = new FormData();
+        formData.append('audio', audio, `audio.${getFileExtension(audio.type)}`);
+        if (languageSTT) formData.append('language', languageSTT);
+        processAudio(formData, {
+          onSuccess: (data) => {
+            if (!isCurrentTake()) {
+              return;
             }
-            autoSendTimerRef.current = setTimeout(() => {
-              autoSendTimerRef.current = null;
-              onTranscriptionComplete(extractedText, takeId);
-            }, autoSendText * 1000);
-          }
-        },
-        onError: () => {
-          showToast({
-            message: 'An error occurred while processing the audio, maybe the audio was too short',
-            status: 'error',
-          });
-          setIsRequestBeingMade(false);
-          onTranscriptionSettled(takeId);
-        },
-      });
+            const extractedText = data.text;
+            setText(extractedText, takeId);
+            setIsRequestBeingMade(false);
+            onTranscriptionSettled(takeId);
+            if (autoSendText > -1 && speechToText && extractedText.length > 0) {
+              if (autoSendTimerRef.current != null) {
+                clearTimeout(autoSendTimerRef.current);
+                autoSendTimerRef.current = null;
+              }
+              autoSendTimerRef.current = setTimeout(() => {
+                autoSendTimerRef.current = null;
+                onTranscriptionComplete(extractedText, takeId);
+              }, autoSendText * 1000);
+            }
+          },
+          onError: fail,
+        });
+      };
+      if (speechConfig?.audioFormat === 'wav') {
+        convertingRef.current = true;
+        void convertAudioToWav(audioBlob).then(submit).catch(fail);
+      } else {
+        submit(audioBlob);
+      }
     } else {
       showToast({ message: 'The audio was too short', status: 'warning' });
       onTranscriptionSettled(recordingTakeIdRef.current);
@@ -206,7 +220,7 @@ const useSpeechToTextExternal = (
 
   const startRecording = async (takeId?: number) => {
     recordingTakeIdRef.current = takeId;
-    if (isRequestBeingMade) {
+    if (isRequestBeingMade || convertingRef.current) {
       showToast({ message: 'A request is already being made. Please wait.', status: 'warning' });
       return;
     }
@@ -318,6 +332,9 @@ const useSpeechToTextExternal = (
    * is what stops a discarded take from spending a transcription request.
    */
   const externalAbortRecording = () => {
+    conversionIdRef.current += 1;
+    convertingRef.current = false;
+    setIsRequestBeingMade(false);
     abortedRef.current = true;
     audioChunksRef.current = [];
 
@@ -346,6 +363,7 @@ const useSpeechToTextExternal = (
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
+      conversionIdRef.current += 1;
 
       if (autoSendTimerRef.current) {
         clearTimeout(autoSendTimerRef.current);
@@ -382,7 +400,7 @@ const useSpeechToTextExternal = (
     externalStopRecording,
     externalAbortRecording,
     externalStartRecording,
-    isLoading: isProcessing,
+    isLoading: isProcessing || isRequestBeingMade,
   };
 };
 

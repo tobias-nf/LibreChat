@@ -2,7 +2,17 @@ import React from 'react';
 import { RecoilRoot } from 'recoil';
 import { act, renderHook } from '@testing-library/react';
 import useSpeechToTextExternal from '../useSpeechToTextExternal';
+import * as audio from '~/utils/audio';
 import store from '~/store';
+
+let mockAudioFormat = 'native';
+jest.mock('librechat-data-provider/react-query', () => ({
+  useGetCustomConfigSpeechQuery: () => ({ data: { audioFormat: mockAudioFormat } }),
+}));
+jest.mock('~/hooks/useLocalize', () => ({
+  __esModule: true,
+  default: () => (key: string) => key,
+}));
 
 /**
  * Everything this hook holds open is a device resource: the recorder, the
@@ -145,6 +155,7 @@ const start = async (begin: () => void) => {
 describe('useSpeechToTextExternal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAudioFormat = 'native';
     FakeMediaRecorder.instances = [];
     FakeMediaRecorder.supportedType = 'audio/webm';
     FakeAudioContext.instances = [];
@@ -236,6 +247,80 @@ describe('useSpeechToTextExternal', () => {
     const uploaded = formData.get('audio') as File;
     expect(uploaded.name).toBe('audio.m4a');
     expect(uploaded.type).toBe('audio/mp4');
+  });
+
+  it('waits for configured WAV conversion before uploading and preserves the take identity', async () => {
+    mockAudioFormat = 'wav';
+    let finish = (_blob: Blob) => {};
+    const convert = jest.spyOn(audio, 'convertAudioToWav').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const { result, setText, onTranscriptionSettled } = setup();
+    await start(() => result.current.externalStartRecording(42));
+    act(() => FakeMediaRecorder.instances[0].emitData(new Blob(['encoded recording'])));
+    act(() => result.current.externalStopRecording());
+    expect(mockProcessAudio).not.toHaveBeenCalled();
+    expect(result.current.isLoading).toBe(true);
+    expect(currentTrack.stop).toHaveBeenCalled();
+    await act(async () => finish(new Blob(['PCM recording'], { type: 'audio/wav' })));
+    const uploaded = mockProcessAudio.mock.calls[0][0].get('audio') as File;
+    expect(uploaded.name).toBe('audio.wav');
+    expect(uploaded.type).toBe('audio/wav');
+    act(() => mockProcessAudio.mock.calls[0][1].onSuccess({ text: 'converted words' }));
+    expect(setText).toHaveBeenCalledWith('converted words', 42);
+    expect(onTranscriptionSettled).toHaveBeenCalledWith(42);
+    expect(result.current.isLoading).toBe(false);
+    convert.mockRestore();
+  });
+
+  it.each(['abort', 'unmount'])(
+    'does not upload when %s happens during conversion',
+    async (end) => {
+      mockAudioFormat = 'wav';
+      let finish = (_blob: Blob) => {};
+      const convert = jest.spyOn(audio, 'convertAudioToWav').mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      );
+      const { result, unmount, onTranscriptionSettled } = setup();
+      await start(result.current.externalStartRecording);
+      act(() => FakeMediaRecorder.instances[0].emitData(new Blob(['encoded recording'])));
+      act(() => result.current.externalStopRecording());
+      act(() => {
+        if (end === 'abort') result.current.externalAbortRecording();
+        else unmount();
+      });
+      await act(async () => finish(new Blob(['PCM recording'], { type: 'audio/wav' })));
+      expect(mockProcessAudio).not.toHaveBeenCalled();
+      expect(onTranscriptionSettled).not.toHaveBeenCalled();
+      convert.mockRestore();
+    },
+  );
+
+  it('settles a failed conversion with localized copy and allows another recording', async () => {
+    mockAudioFormat = 'wav';
+    const convert = jest
+      .spyOn(audio, 'convertAudioToWav')
+      .mockRejectedValue(new Error('private decoder details'));
+    const { result, onTranscriptionSettled } = setup();
+    await start(() => result.current.externalStartRecording(7));
+    act(() => FakeMediaRecorder.instances[0].emitData(new Blob(['invalid recording'])));
+    await act(async () => result.current.externalStopRecording());
+    expect(mockProcessAudio).not.toHaveBeenCalled();
+    expect(onTranscriptionSettled).toHaveBeenCalledWith(7);
+    expect(mockShowToast).toHaveBeenCalledWith({
+      message: 'com_error_audio_transcription',
+      status: 'error',
+    });
+    expect(result.current.isLoading).toBe(false);
+    await start(result.current.externalStartRecording);
+    expect(result.current.isListening).toBe(true);
+    convert.mockRestore();
   });
 
   it('stops the recorder, the microphone and the silence monitor on unmount', async () => {

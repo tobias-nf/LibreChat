@@ -11,6 +11,7 @@ const {
   extractBaseURL,
   getProxyDispatcher,
   applyAxiosProxyConfig,
+  resolveImageOptions,
 } = require('@librechat/api');
 const { getStrategyFunctions } = require('~/server/services/Files/strategies');
 const { getFiles } = require('~/models');
@@ -162,7 +163,7 @@ function createOpenAIImageTools(fields = {}) {
         }
 
         resp = await openai.images.generate(
-          {
+          resolveImageOptions(baseURL, {
             model: imageModel,
             prompt: replaceUnwantedChars(prompt),
             n: Math.min(Math.max(1, n), 10),
@@ -174,7 +175,7 @@ function createOpenAIImageTools(fields = {}) {
                 : undefined,
             quality,
             size,
-          },
+          }),
           {
             signal: derivedSignal,
           },
@@ -247,11 +248,12 @@ Error Message: ${error.message}`);
       const formData = new FormData();
       formData.append('model', imageModel);
       formData.append('prompt', replaceUnwantedChars(prompt));
+      const imageOptions = resolveImageOptions(baseURL, { quality, size });
       // TODO: `mask` support
       // TODO: more than 1 image support
       // formData.append('n', n.toString());
-      formData.append('quality', quality);
-      formData.append('size', size);
+      formData.append('quality', imageOptions.quality);
+      formData.append('size', imageOptions.size);
 
       /** @type {Record<FileSources, undefined | NodeStreamDownloader<File>>} */
       const streamMethods = {};

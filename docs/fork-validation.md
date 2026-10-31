@@ -75,3 +75,141 @@ The integrated image's dependency audit reports 13 findings (three low, six
 moderate, four high). Dependency advisory triage/remediation is not completed by
 this integration and remains a production-release gate. This is the observed
 image-build audit, not an independent security review of the imported code.
+
+## Local feature configuration — 2026-10-31
+
+The `codex/pilot-feature-config` working tree was rebuilt and the Compose API
+recreated on `librechat-setup:local`. Redis and API health checks pass. SSO is
+unchanged and deferred.
+
+- An authenticated request to LibreChat `/api/files/speech/stt` with a synthetic
+  WAV recording returned HTTP 200 and the expected transcript: “This is a voice
+  input test. Revenue increased by 20%.” It used NEAR's Whisper model. Browser
+  microphone hardware capture was not exercised; read-aloud is disabled.
+- A real agent chat called `image_gen_oai` with `size: auto`, `quality: auto`.
+  The NEAR adapter normalized these values; FLUX returned an image that LibreChat
+  saved as a user-owned file. The synthetic green-circle image was visually checked.
+  The private `NEAR AI Images` agent remains under the administrator's account.
+- A daily schedule fired automatically without Run Now at 11:28:57 Asia/Manila.
+  Its saved reply was `SCHEDULE_NEAR_OK`; the schedule recorded one successful run,
+  zero failures, advanced its next occurrence, and was then paused. Prompt and
+  completion transactions were recorded under the schedule owner's user ID.
+- The signed-in standard-user browser showed Scheduled chats and the microphone
+  control. Prompts, bookmarks, and the `/ for prompts` hint were absent.
+- Focused image compatibility and schedule lifecycle tests: 18 passed. API
+  `tsc --noEmit`, scoped ESLint/Prettier, and `git diff --check` passed.
+- Lighthouse passed: median LCP 3,665 ms, CLS 0.0179, TBT 54.9 ms. Two browser
+  navigation attempts retried before the three successful measurements.
+
+The verification script initially triggered the non-browser violation policy.
+Only its four generated ban/cache records and its non-browser counter were removed;
+the policy remains enabled. This invalidated the administrator's prior refresh
+sessions, so that account may need to sign in again.
+
+Image/transcription monetary charges are not recorded by upstream media tools in
+the chat token ledger. Per-user budget enforcement and a qualified code-execution
+sandbox remain unfinished. This is local verification, with no CI, independent
+review, or production deployment claimed.
+
+## Browser voice-format correction — 2026-10-31
+
+The WAV-only smoke test above missed the microphone recorder's native container.
+Synthetic WebM/Opus and MP4/AAC uploads reproduced NEAR's HTTP 400 audio-processing
+error. LibreChat's generic toast incorrectly suggested the recording was too short.
+
+`speech.speechTab.speechToText.audioFormat: wav` now opts this installation into
+local browser decoding and PCM WAV encoding before upload. The default remains
+`native` for other installations. Conversion is covered by tests for PCM headers,
+sample interleaving/clipping, decoder cleanup, loading, cancellation/unmount,
+failure/retry, and preserving the take identity. The error toast now uses localized
+provider-neutral retry guidance without claiming a short recording.
+
+A real Chrome MediaRecorder captured synthetic speech to both WebM and MP4, and
+the production conversion helper converted each to WAV. The authenticated LibreChat
+speech endpoint returned HTTP 200 with the expected transcript for both. No physical microphone or user
+recording was used. The rebuilt local app's speech-config endpoint reports
+`audioFormat: wav` and `engineSTT: external`.
+
+The focused client tests passed (28), configuration tests passed (2), and existing
+speech-config wiring tests passed (10). Client and data-provider typechecks passed.
+Scoped ESLint/Prettier and diff checks passed. Lighthouse passed on rerun after
+browser navigation startup failures (`NO_NAVSTART`); no budgets were changed.
+The temporary localhost-only synthetic test proxy was stopped after verification.
+
+## Local data-analysis sandbox — 2026-10-31
+
+Code Interpreter v1.10.13 (`2fa9f0d43e8e38b7d6240bc76e2483c6a47c64c7`)
+was built natively for ARM64. The separate `librechat-sandbox` Compose project has
+eight healthy services, private control/backend/execution networks, no published
+ports, and separate Redis and S3-compatible storage. The runner has no host mounts,
+no Docker socket, and only the execution network. Its Python and Bash runtimes
+execute under the upstream NsJail profile. Dependency versions are locked.
+
+Live evidence:
+
+- Authenticated Python execution produced CSV, XLSX, and PNG outputs. NumPy/pandas
+  calculated 370 from the synthetic 100/120/150 dataset; the chart was inspected.
+- Sandbox code could not read app/model signing keys from its environment, app paths,
+  or the Docker socket. Attempts to connect to the app network, control network, and
+  internet were denied. A subsequent job had a fresh workspace.
+- The artifact owner downloaded a valid PNG (HTTP 200); a different user got 403.
+  An unauthenticated execution got 401. A 1-second test limit killed a 5-second job
+  with SIGKILL / “Time limit exceeded”.
+- In a signed-in standard-user browser, the **Data analysis** preset read an uploaded
+  CSV and created an inline chart plus a 6,775-byte Excel report. Its ZIP structure,
+  total cell (370), and embedded Excel chart were checked independently. The actual
+  LibreChat download API returned the workbook to its owner (200), and denied another
+  user (403). The optional Sandpack spreadsheet preview timed out; download works.
+- The initial end-to-end test exposed a missing Bash runtime; the final image includes
+  the sandboxed launcher needed by LibreChat's Python/file tools, and the retry passed.
+- Compose validation, script syntax, scoped ESLint/Prettier, and diff checks passed.
+  Setup was rerun successfully without replacing secrets. Lighthouse passed after
+  the config change. No app workspace source code changed for this sandbox setup.
+
+The local Mac mode shares Docker Desktop's Linux VM kernel and needs namespace/mount
+capabilities; it is development isolation, not the hardened KVM production boundary.
+The [sandbox runbook](../infra/code-sandbox/README.md) specifies LibreChat on Railway
+with a separate Linux/KVM execution host, per-user JWT authentication and HTTPS.
+No Railway deployment or KVM-host qualification was performed. Those remain required
+before production; running the local runner directly in standard Railway containers
+is not a supported deployment path.
+
+## Company Google login — 2026-10-31
+
+Created Google Cloud project `nf-librechat-20261031` (number `1026247545893`)
+under the `near.foundation` organization (`715804453671`). Google Auth Platform
+shows an **Internal** audience. The local Web client authorizes only origin
+`http://localhost:3081` and callback `/oauth/google/callback`. Its credentials
+are stored in the ignored private `.env`, not in tracked configuration.
+
+`infra/google-login.env` is the shared local/cloud login policy. Password login
+(including direct API requests), password registration/reset, and passkeys are
+disabled. Google registration is enabled for employees. The shared YAML permits
+only Google and the exact `near.foundation` email domain. Existing server-side
+social-login validation enforces the allowlist before user lookup as well as
+against the resolved user's configuration.
+
+Google's userinfo endpoint verified Tobias's company email, email verification,
+and Workspace domain before linking its Google subject to the existing admin
+account. The user ID, administrator role, and seven conversations were preserved.
+The two prior password sessions were retired; credential-change timestamps and
+auth-cache invalidation prevent those old access tokens remaining valid. There
+were no Agents API keys to revoke. Bob's synthetic account/data remain intact
+but cannot use password login.
+
+After recreating the app, a real Google OAuth flow returned to `/c/new` and
+displayed the preserved conversation history. Public config reports Google on,
+password login/registration/reset and passkeys off. Direct password login and
+registration returned HTTP 403. The configured domain helper accepted company
+email (including uppercase) and rejected Gmail, subdomains, lookalike suffixes,
+and `near.org`. Existing social-login tests passed (16), domain/email middleware
+tests passed (253), and scoped formatting/Compose/diff checks passed. No actual
+external-account OAuth attempt was made.
+Lighthouse passed with the installed Chrome channel on isolated port 3099
+(median LCP approximately 3.5 seconds). Initial attempts found occupied ports
+3080/3098 and a missing Playwright Chromium build; existing services were left
+running and the final check used `E2E_CHROMIUM_CHANNEL=chrome`.
+
+Railway deployment and its separate cloud OAuth client/callback remain pending
+assignment of the temporary Railway hostname. Local and cloud should use the
+same policy/YAML with environment-specific URLs, credentials, and databases.
