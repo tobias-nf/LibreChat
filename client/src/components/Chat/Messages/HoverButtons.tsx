@@ -16,6 +16,7 @@ import {
 } from '@librechat/client';
 import type { TConversation, TMessage, TFeedback } from 'librechat-data-provider';
 import { useMessagesIsSubmitting, useOptionalMessagesOperations } from '~/Providers';
+import { ReplySignature } from '~/components/Chat/Attestation';
 import { useGenerationsByLatest, useLocalize } from '~/hooks';
 import { Fork } from '~/components/Conversations';
 import MessageAudio from './MessageAudio';
@@ -259,6 +260,11 @@ const HoverButtons = ({
           getLatestMessageId={getLatestMessageId ?? (() => latestMessageId)}
           isLast={isLast}
         />
+      )}
+
+      {/* NEAR AI reply signature */}
+      {!isActiveStreamingMessage && !isCreatedByUser && (
+        <ReplySignature message={message} isLast={isLast} />
       )}
 
       {/* Feedback Buttons */}

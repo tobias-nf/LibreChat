@@ -26,6 +26,7 @@ export enum QueryKeys {
   name = 'name', // user key name
   models = 'models',
   balance = 'balance',
+  nearaiAttestation = 'nearaiAttestation',
   endpoints = 'endpoints',
   tokenConfig = 'tokenConfig',
   reasoningCapabilities = 'reasoningCapabilities',
