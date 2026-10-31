@@ -51,6 +51,11 @@ services:
     container_name: librechat-setup-vectordb
   rag_api:
     container_name: librechat-setup-rag
+    env_file:
+      - .env
+      - ./infra/rag.env
+    environment:
+      RAG_OPENAI_API_KEY: '${NEARAI_API_KEY}'
   redis:
     container_name: librechat-setup-redis
     image: redis:7.4-alpine

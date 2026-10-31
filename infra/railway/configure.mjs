@@ -11,6 +11,7 @@ const deployment = JSON.parse(fs.readFileSync(path.join(directory, 'deployment.j
 const local = dotenv.parse(fs.readFileSync(path.join(root, '.env')));
 const policy = dotenv.parse(fs.readFileSync(path.join(root, 'infra/google-login.env')));
 const runtime = dotenv.parse(fs.readFileSync(path.join(root, 'infra/runtime.env')));
+const rag = dotenv.parse(fs.readFileSync(path.join(root, 'infra/rag.env')));
 const secretDirectory = path.join(directory, 'secrets');
 const secretPath = path.join(secretDirectory, 'runtime.json');
 fs.mkdirSync(secretDirectory, { recursive: true, mode: 0o700 });
@@ -46,11 +47,14 @@ const variables = {
     PGDATA: '/var/lib/postgresql/data/pgdata',
   },
   RAG: {
+    ...rag,
     DB_HOST: ref('VectorDB', 'RAILWAY_PRIVATE_DOMAIN'),
     DB_PORT: '5432',
-    DB_DATABASE: 'librechat',
-    DB_USER: 'librechat',
-    DB_PASSWORD: ref('VectorDB', 'POSTGRES_PASSWORD'),
+    POSTGRES_DB: 'librechat',
+    POSTGRES_USER: 'librechat',
+    POSTGRES_PASSWORD: ref('VectorDB', 'POSTGRES_PASSWORD'),
+    RAG_OPENAI_API_KEY: ref('LibreChat', 'NEARAI_API_KEY'),
+    JWT_SECRET: ref('LibreChat', 'JWT_SECRET'),
     RAG_HOST: '0.0.0.0',
     RAG_PORT: '8000',
   },
@@ -62,6 +66,7 @@ const variables = {
     NODE_ENV: 'production',
     CONFIG_PATH: '/app/librechat.yaml',
     PERSISTENT_DATA_DIR: '/app/data',
+    CODE_EXECUTION_ENABLED: 'false',
     DOMAIN_CLIENT: deployment.origin,
     DOMAIN_SERVER: deployment.origin,
     TRUST_PROXY: '1',

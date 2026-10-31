@@ -1,6 +1,15 @@
 #!/bin/sh
 set -eu
 
+if [ "${CODE_EXECUTION_ENABLED:-}" = false ]; then
+  if [ "$(id -u)" = 0 ]; then
+    su-exec node node /app/infra/render-config.mjs
+  else
+    node /app/infra/render-config.mjs
+  fi
+  export CONFIG_PATH=/tmp/librechat-runtime.yaml
+fi
+
 # Railway supplies one persistent volume per service. Keep local bind mounts usable.
 if [ "${PERSISTENT_DATA_DIR:-}" = /app/data ]; then
   for name in uploads logs skill; do
