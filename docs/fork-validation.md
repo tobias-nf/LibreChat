@@ -260,3 +260,19 @@ app is pinned to `7bcc634ce2cf55e48bc954bb842cffe2580fed7f`, deployment
 Deployment IDs and the runbook are in `infra/railway/`. Backup scheduling, restore
 qualification, code execution hosting, and end-to-end upload checks remain before
 a broad employee rollout.
+
+## Configuration-only model selection — 2026-10-31
+
+The shared YAML now explicitly enables `interface.modelSelect`, exposes `nearai`
+through `modelSpecs.addedEndpoints`, and sets `modelSpecs.prioritize: false`.
+`models.fetch: false` limits the dropdown to Kimi K2.6, Qwen 3.8 27B, and GLM 5.3
+Flash. The existing GLM preset has `softDefault: true` for first-time users; later
+model choices take precedence. No application source code changed.
+
+Local Docker was restarted. Its submenu showed exactly three models, and a Qwen
+selection survived New Chat. Railway deployment `8898231a-9a06-481a-a16b-707492eb1a27`
+at commit `c81589702` reports **SUCCESS**. The live submenu showed the same three
+models, and the selected Kimi model survived New Chat and the final redeploy.
+YAML/schema/profile assertions and formatting checks passed, as did 17 backend
+model-loading tests, 48 frontend default-selection tests, and Lighthouse (median
+LCP 3538 ms). Only the isolated LibreChat service was redeployed.
