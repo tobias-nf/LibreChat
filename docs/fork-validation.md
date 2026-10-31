@@ -1,6 +1,7 @@
 # Initial NEAR AI integration validation
 
-Date: 2026-10-31. Source revisions are pinned in [fork-imports.json](fork-imports.json).
+Date: 2026-10-31. Company code checkpoint: `b27d6abc8`. Source revisions are
+pinned in [fork-imports.json](fork-imports.json).
 
 ## Integration resolutions
 
@@ -29,9 +30,8 @@ Date: 2026-10-31. Source revisions are pinned in [fork-imports.json](fork-import
 - Legacy routes, imports/provenance and Agent accounting: 293 tests across six
   suites passed.
 - Configuration: 575 tests passed.
-- Frontend: initial run passed 292/293; the completion selector failed because
-  upstream had removed its component. After adapting the component, its full
-  23-test signature suite passed. A consolidated rerun is recorded below.
+- Frontend: 293 tests across nine suites passed after adapting the removed
+  completion selector to the current shared component.
 - Scoped static checks and unused-i18n check passed. Workspace typechecks ran
   separately rather than in the static runner.
 - Lighthouse passed with 250 ms per Mongo query: median LCP 3,842 ms (limit
@@ -48,10 +48,30 @@ These failures did not require weakening application checks or test assertions.
 
 ## Runtime and release
 
-Docker rebuild, runtime smoke checks and promotion are being completed on the
-integration branch. The previous local image is retained as
+The final Docker image built successfully with code checkpoint
+`b27d6abc8e2e7de85d8c7a2afdb5cdfdaf6c1aec` in its build metadata. The local stack
+is healthy at `http://localhost:3081`, with the company theme, fonts and title.
+The previous local image is retained as
 `librechat-setup:before-nearai-20261031`; existing data volumes are preserved.
+
+A signed-in browser smoke test created one synthetic chat, which returned `OK`.
+The model shield reported verified attestation, the reply shield reported a
+model-TEE signature, and PR #3's embedded production Verification Center showed
+the ED25519 response signature and hardware evidence as verified. The saved reply
+contains a verified `provider_tee` receipt. Four transaction records (Qwen prompt
+and completion, Kimi title prompt and completion) are attributed to one signed-in
+LibreChat user with their configured prices. No account, credential or data-volume
+reset was performed. The synthetic chat remains available as a local smoke example.
+
+Local checks qualify this integration; no independent review or GitHub CI result
+is claimed by this record. Downstream main promotion preserves the source merges
+and the separate company adaptation commit.
 
 Production hosting, Google Workspace SSO, per-user budget enforcement, external
 provider attestation coverage and exhaustive tools/images/files inference remain
 outside this integration's validation. Only the tested local instance is updated.
+
+The integrated image's dependency audit reports 13 findings (three low, six
+moderate, four high). Dependency advisory triage/remediation is not completed by
+this integration and remains a production-release gate. This is the observed
+image-build audit, not an independent security review of the imported code.
