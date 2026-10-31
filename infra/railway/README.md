@@ -10,6 +10,13 @@ Shared app defaults are in `infra/runtime.env`, Google-only login policy in
 `infra/google-login.env`, and NEAR file-search settings in `infra/rag.env`.
 The optional `docker-compose.dev-auth.yml` never applies in Railway.
 
+The model selector exposes the `nearai` endpoint alongside the existing preset.
+Catalog fetching is disabled, so its selectable chat models are exactly the three
+entries in `endpoints.custom[].models.default`: Kimi K2.6, Qwen 3.8 27B, and
+GLM 5.3 Flash. `modelSpecs.prioritize: false` preserves a user's model choice.
+These are configuration settings; no application code changes are needed to
+change the list or add task-specific model presets later.
+
 `CODE_EXECUTION_ENABLED=false` is the one intentional cloud feature difference:
 `infra/render-config.mjs` turns the analysis preset into ordinary NEAR AI chat and
 removes the code capability from the same canonical YAML until a separate KVM execution host is available. Local code
