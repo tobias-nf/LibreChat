@@ -54,9 +54,10 @@ content. Do not automatically cherry-pick every commit again.
   transaction recording and published model rates.
 - `docker-compose.override.yml` owns the isolated local stack, production
   Verification Center URL and company application title.
-- Branding assets/fonts originated in PR #2; the welcome/title are company
-  adaptations. Replace `client/public/assets/logo.svg`, icons, theme and fonts
-  here when adopting a different company visual identity.
+- The theme/fonts originated in PR #2; the welcome/title and supplied green NEAR
+  logo are company adaptations. Preserve `client/public/assets/logo.svg` during
+  imports and regenerate its PNG derivatives with `node scripts/brand-icons.mjs`.
+  Keep logo, icons, theme and font changes in separate company commits.
 - `nearai/deploy/nearai-internal.yaml` is the imported reference, not our active
   config. Do not copy its `near.ai` login restriction or disabled features into
   our deployment implicitly. Google Workspace SSO is not configured by this import.

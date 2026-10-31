@@ -6,9 +6,11 @@ upstream `main` at `94d3d12bd5a1f18c1129fcb6f1d7deac063a1f67` (v0.8.9-rc1).
 Company `main` combines original LibreChat, selected NEAR AI improvements and
 our customization. `nearai` points to `nearai/LibreChat`. See the
 [fork workflow](docs/fork-workflow.md) and [decision](docs/decisions/0001-company-fork.md).
-The local instance uses PR #2's NEAR theme, mark, icons and fonts with
-`NEAR Foundation AI` as its application title and welcome text. Company-specific
-artwork can replace those assets without changing the source-import workflow.
+The local instance uses PR #2's theme and fonts with `NEAR Foundation AI` as its
+application title and welcome text. The app logo and icons use the supplied
+`NEAR_token.svg` artwork: a black NEAR mark on green (`#00EC97`). The exact source
+is tracked as `client/public/assets/logo.svg`. Regenerate its PNG icons with
+`node scripts/brand-icons.mjs`, then rebuild the app image.
 
 ## Start and use
 
