@@ -10,6 +10,7 @@
 data-node
 meili_data*
 librechat*
+!librechat.local.yaml
 Dockerfile*
 docs
 
@@ -22,3 +23,4 @@ docs
 /logs
 /skill
 /infra/code-sandbox
+/infra/railway/secrets

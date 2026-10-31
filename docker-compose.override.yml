@@ -9,17 +9,11 @@ services:
       context: .
       target: node
     env_file:
+      - ./infra/runtime.env
       - ./infra/google-login.env
     environment:
-      SCHEDULES_SINGLE_PROCESS: 'true'
-      APP_TITLE: 'NEAR Foundation AI'
-      NEAR_AI_VERIFY_URL: 'https://cloud.near.ai/verify'
-      USE_REDIS: 'true'
-      USE_REDIS_STREAMS: 'true'
       REDIS_URI: redis://redis:6379
       IMAGE_GEN_OAI_API_KEY: '${NEARAI_API_KEY}'
-      IMAGE_GEN_OAI_BASEURL: https://cloud-api.near.ai/v1
-      IMAGE_GEN_OAI_MODEL: black-forest-labs/FLUX.2-klein-4B
     networks: [default, code-control]
     depends_on:
       redis:

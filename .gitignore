@@ -204,3 +204,4 @@ scripts/activity-labels/results/
 /infra/code-sandbox/upstream/
 /infra/code-sandbox/secrets/
 /infra/code-sandbox/.env
+/infra/railway/secrets/

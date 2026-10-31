@@ -1,0 +1,14 @@
+{
+  "projectId": "125a4dd3-235b-4478-b888-0dfb7444fcee",
+  "environmentId": "75f9a70b-319f-4e21-832d-685997b3e40b",
+  "workspace": "NEAR Foundation",
+  "region": "europe-west4-drams3a",
+  "origin": "https://librechat-production-5b45.up.railway.app",
+  "services": {
+    "LibreChat": "55e57b65-9245-4f9b-8f94-46ab048e730d",
+    "MongoDB": "8fd29a31-6166-4484-b1ef-0372db097581",
+    "Redis": "afc54b1c-34d3-470d-9f19-285d8c33ec90",
+    "VectorDB": "72398bd6-4a52-488c-bc58-ea8ce25fe6e5",
+    "RAG": "62f00776-62a5-4142-87a9-a31c0c7150a2"
+  }
+}

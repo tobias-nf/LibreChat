@@ -4,7 +4,7 @@
 FROM node:24.22.1-alpine AS node
 
 RUN apk upgrade --no-cache
-RUN apk add --no-cache bash jemalloc
+RUN apk add --no-cache bash jemalloc su-exec
 RUN apk add --no-cache python3 py3-pip uv
 
 # Set environment variable to use jemalloc
@@ -80,6 +80,10 @@ ENV BUILD_DATE=${BUILD_DATE}
 # Node API setup
 EXPOSE 3080
 ENV HOST=0.0.0.0
+COPY --chown=node:node librechat.local.yaml /app/librechat.yaml
+ENV CONFIG_PATH=/app/librechat.yaml
+USER root
+ENTRYPOINT ["sh", "/app/infra/start.sh"]
 CMD ["npm", "run", "backend"]
 
 # Optional: for client with nginx routing
