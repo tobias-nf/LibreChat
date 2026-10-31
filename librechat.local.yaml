@@ -195,6 +195,7 @@ modelSpecs:
   addedEndpoints: [nearai]
   list:
     - name: nearai-data-analysis
+      softDefault: true
       label: Data analysis
       description: Analyze uploaded data and create charts or spreadsheets with isolated Python.
       executeCode: true
