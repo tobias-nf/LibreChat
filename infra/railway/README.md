@@ -11,8 +11,8 @@ Shared app defaults are in `infra/runtime.env`, Google-only login policy in
 The optional `docker-compose.dev-auth.yml` never applies in Railway.
 
 `CODE_EXECUTION_ENABLED=false` is the one intentional cloud feature difference:
-`infra/render-config.mjs` removes the analysis preset and code capability from the
-same canonical YAML until a separate KVM execution host is available. Local code
+`infra/render-config.mjs` turns the analysis preset into ordinary NEAR AI chat and
+removes the code capability from the same canonical YAML until a separate KVM execution host is available. Local code
 execution remains enabled. Do not point the cloud app at a developer's laptop.
 
 The single-replica app stores uploads, generated images, deployment skills, logs,

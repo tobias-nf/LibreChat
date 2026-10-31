@@ -6,8 +6,17 @@ const target = '/tmp/librechat-runtime.yaml';
 const config = yaml.load(fs.readFileSync(source, 'utf8'));
 if (process.env.CODE_EXECUTION_ENABLED === 'false') {
   if (config.modelSpecs?.list) {
-    config.modelSpecs.list = config.modelSpecs.list.filter((spec) => !spec.executeCode);
-    if (!config.modelSpecs.list.length) delete config.modelSpecs;
+    config.modelSpecs.list = config.modelSpecs.list.map((spec) =>
+      spec.executeCode
+        ? {
+            ...spec,
+            name: 'nearai-chat',
+            label: 'NEAR AI Chat',
+            description: 'Chat with NEAR AI.',
+            executeCode: false,
+          }
+        : spec,
+    );
   }
   if (config.endpoints?.agents?.capabilities) {
     config.endpoints.agents.capabilities = config.endpoints.agents.capabilities.filter(
