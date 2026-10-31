@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { SelectDropDown } from '@librechat/client';
+import { Dropdown } from '@librechat/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { TNearAIReceipt, TNearAIVerificationReport } from 'librechat-data-provider';
 import { combineReplyReports, hardwareVerifiedAt, replyReport, replyEnvironment } from './reports';
@@ -87,11 +87,12 @@ export default function Verification({
       description={enabled ? localize('com_ui_nearai_verification_response') : undefined}
     >
       {receipts.length > 1 && (
-        <SelectDropDown
-          title={localize('com_ui_nearai_signature_completion')}
+        <Dropdown
+          ariaLabel={localize('com_ui_nearai_signature_completion')}
+          testId="nearai-completion-select"
           value={receipt.completionId}
-          setValue={setSelected}
-          availableValues={receipts.map((item) => item.completionId)}
+          onChange={setSelected}
+          options={receipts.map((item) => item.completionId)}
         />
       )}
     </Viewer>

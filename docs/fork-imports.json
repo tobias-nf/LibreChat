@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-31",
+  "company": "tobias-nf/LibreChat",
+  "upstream": {
+    "repository": "LibreChat-AI/LibreChat",
+    "branch": "main",
+    "sha": "94d3d12bd5a1f18c1129fcb6f1d7deac063a1f67"
+  },
+  "nearai": {
+    "repository": "nearai/LibreChat",
+    "branch": "main",
+    "sha": "cb1dc23fbc6c8bf4cd469d547beb94be7cb4717c",
+    "companyMerge": "164618a19"
+  },
+  "pullRequests": [
+    {
+      "number": 3,
+      "head": "00343b1b01687d9095a61aaabc33c236b8fe5153",
+      "stateAtImport": "open",
+      "companyMerge": "bcfa4d1ed",
+      "purpose": "embedded verification reports and attestation fixes"
+    },
+    {
+      "number": 2,
+      "head": "b529d6e62b5606868572a7733c19be90ff8afa34",
+      "stateAtImport": "closed/draft",
+      "companyMerge": "1a3368d",
+      "purpose": "branding starting point, explicitly selected by the user",
+      "adaptation": "company welcome/title and local config; retain existing login and accounting"
+    }
+  ],
+  "validation": "See docs/fork-validation.md for the combined revision's results."
+}

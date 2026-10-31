@@ -6,6 +6,151 @@ transactions:
   enabled: true
 
 interface:
+  # NEAR AI brand (near.ai/brand): Blue #0091FD primary, Black, Off-White #EEEEEB,
+  # Dark Grey #272727, Grey #A7A7A7, Sky #83DCFF; Schibsted Grotesk / Mona Sans / JetBrains Mono.
+  # Large fills (send button, rings, icons) use Blue #0091FD with black on top (6.5:1); text, links
+  # and white-label buttons use a darker brand blue #0066B3 (light) or Sky (dark) to keep WCAG AA.
+  theme:
+    version: 1
+    name: near-foundation
+    modes:
+      light:
+        colors:
+          rgb-text-primary: '22 23 27' # #16171B labels, headings (near.ai text)
+          rgb-text-secondary: '51 51 51' # #333333 message body text (LibreChat prose reads text-secondary)
+          rgb-text-secondary-alt: '82 82 82' # #525252 secondary UI text
+          rgb-text-tertiary: '105 105 105' # #696969 meta: >=4.5:1 on white and Off-White
+          rgb-text-muted: '82 82 82' # #525252
+          rgb-dialog-title: '22 23 27' # #16171B
+          rgb-link: '0 102 179' # #0066B3 brand blue, darkened: >=4.7:1 on every light surface
+          rgb-link-hover: '0 85 143' # #00558F
+          rgb-link-prose: '0 102 179' # #0066B3
+          rgb-accent-primary: '0 102 179' # #0066B3 accent used as text (e.g. Sign up)
+          rgb-accent-primary-hover: '0 85 143' # #00558F
+          rgb-ring-primary: '0 145 253' # #0091FD
+          rgb-status-verified: '0 145 253' # #0091FD
+          rgb-status-info: '0 102 179' # #0066B3
+          rgb-status-info-subtle: '224 243 255' # #E0F3FF Sky tint
+          rgb-status-info-border: '131 220 255' # #83DCFF brand Sky
+          rgb-surface-submit: '0 102 179' # #0066B3 text buttons: white label 5.9:1
+          rgb-surface-submit-hover: '0 85 143' # #00558F
+          rgb-surface-inverted: '0 145 253' # #0091FD send button, primary actions
+          rgb-surface-inverted-hover: '0 114 201' # #0072C9
+          rgb-surface-inverted-pressed: '0 114 201' # #0072C9
+          rgb-button-primary: '0 145 253' # #0091FD
+          rgb-button-primary-hover: '0 114 201' # #0072C9
+          rgb-text-inverted: '0 0 0' # #000000 black on brand Blue
+          rgb-surface-primary: '253 253 253' # #FDFDFD greyscale lightest
+          rgb-surface-chat: '253 253 253' # #FDFDFD
+          rgb-surface-composer: '255 255 255' # #FFFFFF
+          rgb-header-primary: '253 253 253' # #FDFDFD
+          rgb-surface-dialog: '253 253 253' # #FDFDFD
+          rgb-surface-popover: '253 253 253' # #FDFDFD
+          rgb-surface-menu: '253 253 253' # #FDFDFD
+          rgb-surface-canvas: '253 253 253' # #FDFDFD chat area, same as the sign-in page
+          rgb-surface-primary-alt: '238 238 235' # #EEEEEB
+          rgb-surface-secondary: '238 238 235' # #EEEEEB
+          rgb-surface-card: '238 238 235' # #EEEEEB
+          rgb-surface-search: '238 238 235' # #EEEEEB
+          rgb-surface-code: '238 238 235' # #EEEEEB
+          rgb-header-hover: '238 238 235' # #EEEEEB
+          rgb-surface-tertiary: '230 230 230' # #E6E6E6 greyscale
+          rgb-surface-user-message: '238 238 235' # #EEEEEB your bubbles: brand Off-White, neutral
+          rgb-surface-active: '230 230 230' # #E6E6E6
+          rgb-surface-hover: '230 230 230' # #E6E6E6
+          rgb-surface-nav-hover: '231 231 228' # #E7E7E4 sidebar hover
+          rgb-surface-card-hover: '230 230 230' # #E6E6E6
+          rgb-surface-tab-selected: '230 230 230' # #E6E6E6
+          rgb-surface-code-inline: '230 230 230' # #E6E6E6
+          rgb-header-button-hover: '230 230 230' # #E6E6E6
+          rgb-surface-active-alt: '213 213 213' # #D5D5D5 greyscale
+          rgb-surface-hover-alt: '213 213 213' # #D5D5D5
+          rgb-surface-nav-selected: '223 223 219' # #DFDFDB selected chat: lighter than #D5D5D5
+          rgb-border-light: '230 230 230' # #E6E6E6
+          rgb-border-control: '213 213 213' # #D5D5D5
+          rgb-border-menu: '230 230 230' # #E6E6E6
+          rgb-chart-widget-stroke: '230 230 230' # #E6E6E6
+          rgb-border-medium: '213 213 213' # #D5D5D5
+          rgb-border-medium-alt: '213 213 213' # #D5D5D5
+          rgb-border-heavy: '180 180 180' # #B4B4B4
+          rgb-border-xheavy: '133 133 133' # #858585
+        appearance:
+          fontFamily: "'Mona Sans', system-ui, sans-serif" # brand body
+          displayFontFamily: "'Schibsted Grotesk', 'Mona Sans', system-ui, sans-serif" # brand display
+          dialogTitleFontFamily: "'Schibsted Grotesk', 'Mona Sans', system-ui, sans-serif"
+          monoFontFamily: "'JetBrains Mono', ui-monospace, monospace" # brand utility
+          controlFontWeight: '600' # brand: semibold buttons
+          dialogTitleFontWeight: '600'
+      dark:
+        colors:
+          rgb-text-primary: '253 253 253' # #FDFDFD
+          rgb-text-secondary: '213 213 213' # #D5D5D5 message body text (greyscale)
+          rgb-text-secondary-alt: '167 167 167' # #A7A7A7 secondary UI text (brand Grey)
+          rgb-text-tertiary: '133 133 133' # #858585
+          rgb-text-muted: '167 167 167' # #A7A7A7
+          rgb-dialog-title: '253 253 253' # #FDFDFD
+          rgb-link: '131 220 255' # #83DCFF brand Sky (13.6:1 on black)
+          rgb-link-hover: '0 145 253' # #0091FD
+          rgb-link-prose: '131 220 255' # #83DCFF
+          rgb-accent-primary: '0 145 253' # #0091FD brand Blue
+          rgb-accent-primary-hover: '131 220 255' # #83DCFF
+          rgb-ring-primary: '0 145 253' # #0091FD
+          rgb-status-verified: '0 145 253' # #0091FD
+          rgb-status-info: '131 220 255' # #83DCFF
+          rgb-status-info-subtle: '7 49 79' # #07314F
+          rgb-status-info-border: '35 133 199' # #2385C7 brand Deep Blue
+          rgb-surface-submit: '0 102 179' # #0066B3 text buttons: white label 5.9:1
+          rgb-surface-submit-hover: '0 85 143' # #00558F
+          rgb-surface-inverted: '0 145 253' # #0091FD
+          rgb-surface-inverted-hover: '35 133 199' # #2385C7
+          rgb-surface-inverted-pressed: '35 133 199' # #2385C7
+          rgb-button-primary: '0 145 253' # #0091FD
+          rgb-button-primary-hover: '35 133 199' # #2385C7
+          rgb-text-inverted: '0 0 0' # #000000 black on brand Blue
+          rgb-surface-primary: '5 5 5' # #050505
+          rgb-surface-chat: '5 5 5' # #050505
+          rgb-header-primary: '5 5 5' # #050505
+          rgb-surface-canvas: '5 5 5' # #050505 page / chat area (near.ai --cl-bg)
+          rgb-surface-primary-alt: '12 12 12' # #0C0C0C sidebar (--cl-bg2)
+          rgb-surface-secondary: '17 17 17' # #111111
+          rgb-surface-card: '17 17 17' # #111111
+          rgb-surface-search: '17 17 17' # #111111
+          rgb-surface-code: '17 17 17' # #111111
+          rgb-surface-dialog: '17 17 17' # #111111
+          rgb-surface-popover: '17 17 17' # #111111
+          rgb-surface-menu: '17 17 17' # #111111
+          rgb-surface-composer: '17 17 17' # #111111 composer, cards, menus (--cl-surface)
+          rgb-surface-tertiary: '25 25 25' # #191919 hover, user message (--cl-surface2)
+          rgb-surface-user-message: '31 31 31' # #1F1F1F your bubbles: neutral, a step above the page
+          rgb-surface-active: '25 25 25' # #191919
+          rgb-surface-hover: '25 25 25' # #191919
+          rgb-surface-nav-hover: '25 25 25' # #191919
+          rgb-surface-card-hover: '25 25 25' # #191919
+          rgb-header-hover: '25 25 25' # #191919
+          rgb-surface-active-alt: '39 39 39' # #272727 selected (brand Dark Grey)
+          rgb-surface-hover-alt: '39 39 39' # #272727
+          rgb-surface-nav-selected: '39 39 39' # #272727
+          rgb-surface-tab-selected: '39 39 39' # #272727
+          rgb-header-button-hover: '39 39 39' # #272727
+          rgb-surface-code-inline: '39 39 39' # #272727
+          rgb-border-light: '31 31 31' # #1F1F1F hairline (~8% white)
+          rgb-border-control: '46 46 46' # #2E2E2E field edge (~14% white)
+          rgb-border-menu: '31 31 31' # #1F1F1F
+          rgb-chart-widget-stroke: '31 31 31' # #1F1F1F
+          rgb-border-medium: '46 46 46' # #2E2E2E
+          rgb-border-medium-alt: '46 46 46' # #2E2E2E
+          rgb-border-heavy: '82 82 82' # #525252
+          rgb-border-xheavy: '133 133 133' # #858585
+          rgb-drawer-edge: '12 12 12' # #0C0C0C
+          rgb-field-fill: '17 17 17' # #111111
+        appearance:
+          fontFamily: "'Mona Sans', system-ui, sans-serif" # brand body
+          displayFontFamily: "'Schibsted Grotesk', 'Mona Sans', system-ui, sans-serif" # brand display
+          dialogTitleFontFamily: "'Schibsted Grotesk', 'Mona Sans', system-ui, sans-serif"
+          monoFontFamily: "'JetBrains Mono', ui-monospace, monospace" # brand utility
+          controlFontWeight: '600' # brand: semibold buttons
+          dialogTitleFontWeight: '600'
+  customWelcome: 'NEAR Foundation AI'
   contextUsage: true
   contextCost: true
 
@@ -28,68 +173,115 @@ endpoints:
       tokenConfig:
         # BEGIN NEAR AI PRICING
         # USD per million tokens; fetched 2026-10-31 from https://cloud-api.near.ai/v1/models
-        "Qwen/Qwen3-Embedding-0.6B": {"prompt": 0.01, "completion": 0.01, "context": 32768}
-        "Qwen/Qwen3-Reranker-0.6B": {"prompt": 0.01, "completion": 0.01, "context": 40960}
-        "Qwen/Qwen3-VL-30B-A3B-Instruct": {"prompt": 0.15, "completion": 0.55, "context": 16384, "cacheRead": 0.03}
-        "Qwen/Qwen3.6-35B-A3B-FP8": {"prompt": 0.17, "completion": 1.1, "context": 262144, "cacheRead": 0.056}
-        "Qwen/Qwen3.8-27B": {"prompt": 0.04, "completion": 1.35, "context": 262144, "cacheRead": 0.018}
-        "Qwen/Qwen3.8-27B-abliterated": {"prompt": 0.04, "completion": 1.35, "context": 262144, "cacheRead": 0.018}
-        "anthropic/claude-fable-5": {"prompt": 10.0, "completion": 50.0, "context": 1000000, "cacheRead": 1.0}
-        "anthropic/claude-fable-5-1": {"prompt": 10.0, "completion": 50.0, "context": 1000000, "cacheRead": 0.25}
-        "anthropic/claude-haiku-4-5": {"prompt": 1.0, "completion": 5.0, "context": 200000, "cacheRead": 0.1}
-        "anthropic/claude-haiku-5-5": {"prompt": 0.1, "completion": 0.5, "context": 1000000, "cacheRead": 0.01}
-        "anthropic/claude-opus-4-6": {"prompt": 5.0, "completion": 25.0, "context": 200000, "cacheRead": 0.5}
-        "anthropic/claude-opus-4-7": {"prompt": 5.0, "completion": 25.0, "context": 1000000, "cacheRead": 0.5}
-        "anthropic/claude-opus-4-8": {"prompt": 5.0, "completion": 25.0, "context": 1000000, "cacheRead": 0.5}
-        "anthropic/claude-opus-5": {"prompt": 5.0, "completion": 25.0, "context": 1000000, "cacheRead": 0.5}
-        "anthropic/claude-opus-5-5": {"prompt": 4.0, "completion": 20.0, "context": 1000000, "cacheRead": 0.2}
-        "anthropic/claude-sonnet-4-5": {"prompt": 3.0, "completion": 15.0, "context": 200000, "cacheRead": 0.3}
-        "anthropic/claude-sonnet-4-6": {"prompt": 3.0, "completion": 15.0, "context": 1000000, "cacheRead": 0.3}
-        "anthropic/claude-sonnet-5": {"prompt": 2.0, "completion": 10.0, "context": 1000000, "cacheRead": 0.2}
-        "anthropic/claude-sonnet-5-5": {"prompt": 2.0, "completion": 10.0, "context": 1000000, "cacheRead": 0.1}
-        "black-forest-labs/FLUX.2-klein-4B": {"prompt": 1.0, "completion": 1.0, "context": 128000}
-        "deepseek-ai/DeepSeek-V4.1-Flash-1017": {"prompt": 0.3, "completion": 1.2, "context": 1048576, "cacheRead": 0.006}
-        "deepseek-ai/DeepSeek-V4.1-Flash-1017-abliterated": {"prompt": 0.3, "completion": 1.2, "context": 1048576, "cacheRead": 0.006}
-        "deepseek/deepseek-v3.2": {"prompt": 1.1, "completion": 1.1, "context": 128000, "cacheRead": 0.55}
-        "deepseek/deepseek-v4.1-flash": {"prompt": 0.3, "completion": 1.2, "context": 1048576, "cacheRead": 0.006}
-        "deepseek/deepseek-v4.1-flash-1017": {"prompt": 0.3, "completion": 1.2, "context": 1048576, "cacheRead": 0.006}
-        "google/gemini-2.5-flash": {"prompt": 0.3, "completion": 2.5, "context": 1000000}
-        "google/gemini-2.5-flash-lite": {"prompt": 0.1, "completion": 0.4, "context": 1048576}
-        "google/gemini-2.5-pro": {"prompt": 1.25, "completion": 10.0, "context": 1000000}
-        "google/gemini-3.1-flash-lite": {"prompt": 0.25, "completion": 1.5, "context": 1048576}
-        "google/gemini-3.5-flash": {"prompt": 1.5, "completion": 9.0, "context": 1000000, "cacheRead": 0.15}
-        "google/gemini-3.8-flash": {"prompt": 0.75, "completion": 3.75, "context": 1000000, "cacheRead": 0.075}
-        "levanto/sage-1.4": {"prompt": 0.07, "completion": 2.0, "context": 32768}
-        "moonshotai/kimi-k2.6": {"prompt": 0.81, "completion": 3.85, "context": 262144, "cacheRead": 0.41}
-        "moonshotai/kimi-k3": {"prompt": 3.3, "completion": 16.5, "context": 1048576, "cacheRead": 0.33}
-        "moonshotai/kimi-k3.1-pro": {"prompt": 2.0, "completion": 10.0, "context": 1000000, "cacheRead": 0.2}
-        "openai/gpt-4.1": {"prompt": 2.0, "completion": 8.0, "context": 1000000, "cacheRead": 0.5}
-        "openai/gpt-4.1-mini": {"prompt": 0.4, "completion": 1.6, "context": 1000000, "cacheRead": 0.1}
-        "openai/gpt-5": {"prompt": 1.25, "completion": 10.0, "context": 400000, "cacheRead": 0.125}
-        "openai/gpt-5-mini": {"prompt": 0.25, "completion": 2.0, "context": 400000, "cacheRead": 0.025}
-        "openai/gpt-5-nano": {"prompt": 0.05, "completion": 0.4, "context": 400000, "cacheRead": 0.005}
-        "openai/gpt-5.1": {"prompt": 1.25, "completion": 10.0, "context": 400000, "cacheRead": 0.125}
-        "openai/gpt-5.2": {"prompt": 1.75, "completion": 14.0, "context": 400000, "cacheRead": 0.175}
-        "openai/gpt-5.4": {"prompt": 2.5, "completion": 15.0, "context": 1050000, "cacheRead": 0.25}
-        "openai/gpt-5.4-mini": {"prompt": 0.75, "completion": 4.5, "context": 400000, "cacheRead": 0.075}
-        "openai/gpt-5.4-nano": {"prompt": 0.2, "completion": 1.25, "context": 400000, "cacheRead": 0.02}
-        "openai/gpt-5.5": {"prompt": 5.0, "completion": 30.0, "context": 1050000, "cacheRead": 0.5}
-        "openai/gpt-5.6-luna": {"prompt": 0.2, "completion": 1.2, "context": 1050000, "cacheRead": 0.02}
-        "openai/gpt-5.6-sol": {"prompt": 4.0, "completion": 20.0, "context": 1050000, "cacheRead": 0.4}
-        "openai/gpt-6-astra": {"prompt": 10.0, "completion": 50.0, "context": 1050000, "cacheRead": 1.0}
-        "openai/gpt-6-luna": {"prompt": 0.1, "completion": 0.5, "context": 1050000, "cacheRead": 0.01}
-        "openai/gpt-6-sol": {"prompt": 2.0, "completion": 10.0, "context": 1050000, "cacheRead": 0.2}
-        "openai/gpt-6.1-sol": {"prompt": 2.0, "completion": 10.0, "context": 1050000, "cacheRead": 0.1}
-        "openai/o3": {"prompt": 2.0, "completion": 8.0, "context": 200000, "cacheRead": 0.5}
-        "openai/o3-mini": {"prompt": 1.1, "completion": 4.4, "context": 200000, "cacheRead": 0.55}
-        "openai/o4-mini": {"prompt": 1.1, "completion": 4.4, "context": 200000, "cacheRead": 0.275}
-        "openai/privacy-filter": {"prompt": 0.01, "completion": 0.0, "context": 128000}
-        "openai/whisper-large-v3": {"prompt": 0.01, "completion": 0.01, "context": 448}
-        "qwen/qwen3.5-397b-a17b": {"prompt": 0.5, "completion": 3.3, "context": 128000, "cacheRead": 0.25}
-        "qwen/qwen3.7-max": {"prompt": 2.8, "completion": 7.5, "context": 1000000}
-        "typesafe/jev-1.13": {"prompt": 0.042, "completion": 0.0, "context": 32000, "cacheRead": 0.0}
-        "x-ai/grok-4.6": {"prompt": 2.0, "completion": 6.0, "context": 500000, "cacheRead": 0.5}
-        "x-ai/grok-4.7": {"prompt": 2.0, "completion": 6.0, "context": 500000, "cacheRead": 0.5}
-        "z-ai/glm-5.3": {"prompt": 1.8, "completion": 5.75, "context": 1048576, "cacheRead": 0.45}
-        "z-ai/glm-5.3-flash": {"prompt": 0.08, "completion": 0.5, "context": 1048576, "cacheRead": 0.012}
+        'Qwen/Qwen3-Embedding-0.6B': { 'prompt': 0.01, 'completion': 0.01, 'context': 32768 }
+        'Qwen/Qwen3-Reranker-0.6B': { 'prompt': 0.01, 'completion': 0.01, 'context': 40960 }
+        'Qwen/Qwen3-VL-30B-A3B-Instruct':
+          { 'prompt': 0.15, 'completion': 0.55, 'context': 16384, 'cacheRead': 0.03 }
+        'Qwen/Qwen3.6-35B-A3B-FP8':
+          { 'prompt': 0.17, 'completion': 1.1, 'context': 262144, 'cacheRead': 0.056 }
+        'Qwen/Qwen3.8-27B':
+          { 'prompt': 0.04, 'completion': 1.35, 'context': 262144, 'cacheRead': 0.018 }
+        'Qwen/Qwen3.8-27B-abliterated':
+          { 'prompt': 0.04, 'completion': 1.35, 'context': 262144, 'cacheRead': 0.018 }
+        'anthropic/claude-fable-5':
+          { 'prompt': 10.0, 'completion': 50.0, 'context': 1000000, 'cacheRead': 1.0 }
+        'anthropic/claude-fable-5-1':
+          { 'prompt': 10.0, 'completion': 50.0, 'context': 1000000, 'cacheRead': 0.25 }
+        'anthropic/claude-haiku-4-5':
+          { 'prompt': 1.0, 'completion': 5.0, 'context': 200000, 'cacheRead': 0.1 }
+        'anthropic/claude-haiku-5-5':
+          { 'prompt': 0.1, 'completion': 0.5, 'context': 1000000, 'cacheRead': 0.01 }
+        'anthropic/claude-opus-4-6':
+          { 'prompt': 5.0, 'completion': 25.0, 'context': 200000, 'cacheRead': 0.5 }
+        'anthropic/claude-opus-4-7':
+          { 'prompt': 5.0, 'completion': 25.0, 'context': 1000000, 'cacheRead': 0.5 }
+        'anthropic/claude-opus-4-8':
+          { 'prompt': 5.0, 'completion': 25.0, 'context': 1000000, 'cacheRead': 0.5 }
+        'anthropic/claude-opus-5':
+          { 'prompt': 5.0, 'completion': 25.0, 'context': 1000000, 'cacheRead': 0.5 }
+        'anthropic/claude-opus-5-5':
+          { 'prompt': 4.0, 'completion': 20.0, 'context': 1000000, 'cacheRead': 0.2 }
+        'anthropic/claude-sonnet-4-5':
+          { 'prompt': 3.0, 'completion': 15.0, 'context': 200000, 'cacheRead': 0.3 }
+        'anthropic/claude-sonnet-4-6':
+          { 'prompt': 3.0, 'completion': 15.0, 'context': 1000000, 'cacheRead': 0.3 }
+        'anthropic/claude-sonnet-5':
+          { 'prompt': 2.0, 'completion': 10.0, 'context': 1000000, 'cacheRead': 0.2 }
+        'anthropic/claude-sonnet-5-5':
+          { 'prompt': 2.0, 'completion': 10.0, 'context': 1000000, 'cacheRead': 0.1 }
+        'black-forest-labs/FLUX.2-klein-4B': { 'prompt': 1.0, 'completion': 1.0, 'context': 128000 }
+        'deepseek-ai/DeepSeek-V4.1-Flash-1017':
+          { 'prompt': 0.3, 'completion': 1.2, 'context': 1048576, 'cacheRead': 0.006 }
+        'deepseek-ai/DeepSeek-V4.1-Flash-1017-abliterated':
+          { 'prompt': 0.3, 'completion': 1.2, 'context': 1048576, 'cacheRead': 0.006 }
+        'deepseek/deepseek-v3.2':
+          { 'prompt': 1.1, 'completion': 1.1, 'context': 128000, 'cacheRead': 0.55 }
+        'deepseek/deepseek-v4.1-flash':
+          { 'prompt': 0.3, 'completion': 1.2, 'context': 1048576, 'cacheRead': 0.006 }
+        'deepseek/deepseek-v4.1-flash-1017':
+          { 'prompt': 0.3, 'completion': 1.2, 'context': 1048576, 'cacheRead': 0.006 }
+        'google/gemini-2.5-flash': { 'prompt': 0.3, 'completion': 2.5, 'context': 1000000 }
+        'google/gemini-2.5-flash-lite': { 'prompt': 0.1, 'completion': 0.4, 'context': 1048576 }
+        'google/gemini-2.5-pro': { 'prompt': 1.25, 'completion': 10.0, 'context': 1000000 }
+        'google/gemini-3.1-flash-lite': { 'prompt': 0.25, 'completion': 1.5, 'context': 1048576 }
+        'google/gemini-3.5-flash':
+          { 'prompt': 1.5, 'completion': 9.0, 'context': 1000000, 'cacheRead': 0.15 }
+        'google/gemini-3.8-flash':
+          { 'prompt': 0.75, 'completion': 3.75, 'context': 1000000, 'cacheRead': 0.075 }
+        'levanto/sage-1.4': { 'prompt': 0.07, 'completion': 2.0, 'context': 32768 }
+        'moonshotai/kimi-k2.6':
+          { 'prompt': 0.81, 'completion': 3.85, 'context': 262144, 'cacheRead': 0.41 }
+        'moonshotai/kimi-k3':
+          { 'prompt': 3.3, 'completion': 16.5, 'context': 1048576, 'cacheRead': 0.33 }
+        'moonshotai/kimi-k3.1-pro':
+          { 'prompt': 2.0, 'completion': 10.0, 'context': 1000000, 'cacheRead': 0.2 }
+        'openai/gpt-4.1': { 'prompt': 2.0, 'completion': 8.0, 'context': 1000000, 'cacheRead': 0.5 }
+        'openai/gpt-4.1-mini':
+          { 'prompt': 0.4, 'completion': 1.6, 'context': 1000000, 'cacheRead': 0.1 }
+        'openai/gpt-5':
+          { 'prompt': 1.25, 'completion': 10.0, 'context': 400000, 'cacheRead': 0.125 }
+        'openai/gpt-5-mini':
+          { 'prompt': 0.25, 'completion': 2.0, 'context': 400000, 'cacheRead': 0.025 }
+        'openai/gpt-5-nano':
+          { 'prompt': 0.05, 'completion': 0.4, 'context': 400000, 'cacheRead': 0.005 }
+        'openai/gpt-5.1':
+          { 'prompt': 1.25, 'completion': 10.0, 'context': 400000, 'cacheRead': 0.125 }
+        'openai/gpt-5.2':
+          { 'prompt': 1.75, 'completion': 14.0, 'context': 400000, 'cacheRead': 0.175 }
+        'openai/gpt-5.4':
+          { 'prompt': 2.5, 'completion': 15.0, 'context': 1050000, 'cacheRead': 0.25 }
+        'openai/gpt-5.4-mini':
+          { 'prompt': 0.75, 'completion': 4.5, 'context': 400000, 'cacheRead': 0.075 }
+        'openai/gpt-5.4-nano':
+          { 'prompt': 0.2, 'completion': 1.25, 'context': 400000, 'cacheRead': 0.02 }
+        'openai/gpt-5.5':
+          { 'prompt': 5.0, 'completion': 30.0, 'context': 1050000, 'cacheRead': 0.5 }
+        'openai/gpt-5.6-luna':
+          { 'prompt': 0.2, 'completion': 1.2, 'context': 1050000, 'cacheRead': 0.02 }
+        'openai/gpt-5.6-sol':
+          { 'prompt': 4.0, 'completion': 20.0, 'context': 1050000, 'cacheRead': 0.4 }
+        'openai/gpt-6-astra':
+          { 'prompt': 10.0, 'completion': 50.0, 'context': 1050000, 'cacheRead': 1.0 }
+        'openai/gpt-6-luna':
+          { 'prompt': 0.1, 'completion': 0.5, 'context': 1050000, 'cacheRead': 0.01 }
+        'openai/gpt-6-sol':
+          { 'prompt': 2.0, 'completion': 10.0, 'context': 1050000, 'cacheRead': 0.2 }
+        'openai/gpt-6.1-sol':
+          { 'prompt': 2.0, 'completion': 10.0, 'context': 1050000, 'cacheRead': 0.1 }
+        'openai/o3': { 'prompt': 2.0, 'completion': 8.0, 'context': 200000, 'cacheRead': 0.5 }
+        'openai/o3-mini': { 'prompt': 1.1, 'completion': 4.4, 'context': 200000, 'cacheRead': 0.55 }
+        'openai/o4-mini':
+          { 'prompt': 1.1, 'completion': 4.4, 'context': 200000, 'cacheRead': 0.275 }
+        'openai/privacy-filter': { 'prompt': 0.01, 'completion': 0.0, 'context': 128000 }
+        'openai/whisper-large-v3': { 'prompt': 0.01, 'completion': 0.01, 'context': 448 }
+        'qwen/qwen3.5-397b-a17b':
+          { 'prompt': 0.5, 'completion': 3.3, 'context': 128000, 'cacheRead': 0.25 }
+        'qwen/qwen3.7-max': { 'prompt': 2.8, 'completion': 7.5, 'context': 1000000 }
+        'typesafe/jev-1.13':
+          { 'prompt': 0.042, 'completion': 0.0, 'context': 32000, 'cacheRead': 0.0 }
+        'x-ai/grok-4.6': { 'prompt': 2.0, 'completion': 6.0, 'context': 500000, 'cacheRead': 0.5 }
+        'x-ai/grok-4.7': { 'prompt': 2.0, 'completion': 6.0, 'context': 500000, 'cacheRead': 0.5 }
+        'z-ai/glm-5.3': { 'prompt': 1.8, 'completion': 5.75, 'context': 1048576, 'cacheRead': 0.45 }
+        'z-ai/glm-5.3-flash':
+          { 'prompt': 0.08, 'completion': 0.5, 'context': 1048576, 'cacheRead': 0.012 }
         # END NEAR AI PRICING

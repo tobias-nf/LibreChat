@@ -1,5 +1,15 @@
 # LibreChat contributor and agent guidance
 
+## Company fork
+
+This checkout is the NEAR Foundation fork. Company changes and integration PRs
+target `origin/main`; preserve LibreChat and NEAR AI histories through integration
+branches. The upstream contribution rules below still apply when sending changes
+to `LibreChat-AI/LibreChat`. For fork updates use
+`.agents/skills/librechat-sync/SKILL.md` and `docs/fork-workflow.md`. Source revisions
+are recorded in `docs/fork-imports.json`. Keep company adaptations separate from
+source merges and preserve private `.env` and local data.
+
 `AGENTS.md` is the repository's contributor guidance. Backend code lives in `packages/api`
 (TypeScript) and `packages/data-schemas` (database methods); `api` is legacy Express wiring.
 Shared API types and services live in `packages/data-provider`, and the React app lives in

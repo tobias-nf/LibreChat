@@ -40,7 +40,6 @@
   "com_ui_pr_state_merged": "Merged",
   "com_ui_pr_state_open": "Open",
   "com_ui_pull_request": "Pull request",
-  "com_ui_nearai_signature_algorithm": "Algorithm",
   "com_ui_nearai_hardware_checked_at": "Hardware checked at",
   "com_ui_nearai_verification_response": "Saved reply signature with hardware verification.",
   "com_ui_nearai_environment_unavailable": "Current hardware verification is unavailable. The saved reply signature result is unchanged.",

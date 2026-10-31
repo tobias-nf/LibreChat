@@ -103,7 +103,7 @@ interface:
           rgb-surface-submit-hover: '0 85 143'      # #00558F
           rgb-surface-inverted: '0 145 253'         # #0091FD
           rgb-surface-inverted-hover: '35 133 199'  # #2385C7
-          rgb-surface-inverted-pressed: '35 133 199'# #2385C7
+          rgb-surface-inverted-pressed: '35 133 199' # #2385C7
           rgb-button-primary: '0 145 253'           # #0091FD
           rgb-button-primary-hover: '35 133 199'    # #2385C7
           rgb-text-inverted: '0 0 0'                # #000000 black on brand Blue

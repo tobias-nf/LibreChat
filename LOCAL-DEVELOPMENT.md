@@ -3,7 +3,12 @@
 This folder is the root of the `tobias-nf/LibreChat` fork. `origin` points to
 the fork and `upstream` to `LibreChat-AI/LibreChat`. The initial checkout is
 upstream `main` at `94d3d12bd5a1f18c1129fcb6f1d7deac063a1f67` (v0.8.9-rc1).
-Local setup work is on `codex/local-docker-setup`.
+Company `main` combines original LibreChat, selected NEAR AI improvements and
+our customization. `nearai` points to `nearai/LibreChat`. See the
+[fork workflow](docs/fork-workflow.md) and [decision](docs/decisions/0001-company-fork.md).
+The local instance uses PR #2's NEAR theme, mark, icons and fonts with
+`NEAR Foundation AI` as its application title and welcome text. Company-specific
+artwork can replace those assets without changing the source-import workflow.
 
 ## Start and use
 
@@ -94,9 +99,10 @@ PostgreSQL plus app credential data use project-scoped Docker volumes.
 
 ## Upstream updates and deployment
 
-Fetch upstream changes with `git fetch upstream`, review them, and merge a chosen
-upstream release into the customization branch before rebuilding. Commit selected
-customizations to the fork; never add `.env` or runtime data.
+Follow [the fork workflow](docs/fork-workflow.md) to import original LibreChat
+updates and NEAR AI main/PR revisions on an integration branch before promoting
+company `main`. Use the `$librechat-sync` Codex skill for this workflow. Commit
+company adaptations separately; never add `.env` or runtime data.
 
 This is a local development stack. Choose the hosting target and configure
 production authentication, HTTPS, secret storage, backups, and provider credentials

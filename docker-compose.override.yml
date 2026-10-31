@@ -9,13 +9,21 @@ services:
       context: .
       target: node
     environment:
-      SCHEDULES_SINGLE_PROCESS: "true"
+      SCHEDULES_SINGLE_PROCESS: 'true'
+      APP_TITLE: 'NEAR Foundation AI'
+      NEAR_AI_VERIFY_URL: 'https://cloud.near.ai/verify'
     volumes:
       - ./librechat.local.yaml:/app/librechat.yaml:ro
     ports: !override
-      - "127.0.0.1:${PORT:-3081}:${PORT:-3081}"
+      - '127.0.0.1:${PORT:-3081}:${PORT:-3081}'
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:${PORT:-3081}/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:${PORT:-3081}/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
       interval: 15s
       timeout: 5s
       start_period: 90s
@@ -24,11 +32,11 @@ services:
     container_name: librechat-setup-admin
     profiles: [admin]
     ports: !override
-      - "127.0.0.1:${ADMIN_PANEL_PORT:-3082}:3000"
+      - '127.0.0.1:${ADMIN_PANEL_PORT:-3082}:3000'
   mongodb:
     container_name: librechat-setup-mongodb
     # The official entrypoint sets ownership, then drops to the mongodb user.
-    user: "0:0"
+    user: '0:0'
     volumes: !override
       - mongodb-data:/data/db
   meilisearch:
@@ -42,7 +50,7 @@ networks:
   default:
     ipam:
       config:
-        - subnet: "${LOCAL_DOCKER_SUBNET:-10.254.243.0/24}"
+        - subnet: '${LOCAL_DOCKER_SUBNET:-10.254.243.0/24}'
 
 volumes:
   mongodb-data:

@@ -1,8 +1,8 @@
 import { memo, useCallback, useRef, useState } from 'react';
+import { hoverButtonClasses } from '@librechat/chat/components';
 import { OGDialog, TooltipAnchor, useTheme } from '@librechat/client';
 import { ShieldAlert, ShieldCheck, ShieldHalf, ShieldQuestion } from 'lucide-react';
 import type { TMessage, TNearAIReceipt } from 'librechat-data-provider';
-import { hoverButtonClasses } from '~/components/Chat/Messages/styles';
 import Verification from './Verification';
 import { getReceipts } from './reports';
 import { useLocalize } from '~/hooks';

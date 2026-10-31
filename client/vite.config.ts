@@ -155,8 +155,8 @@ export default defineConfig(({ command }) => ({
       },
       includeAssets: [],
       manifest: {
-        name: 'Private AI',
-        short_name: 'Private AI',
+        name: 'NEAR Foundation AI',
+        short_name: 'NEAR Foundation AI',
         display: 'standalone',
         background_color: '#000000',
         theme_color: '#0091FD',

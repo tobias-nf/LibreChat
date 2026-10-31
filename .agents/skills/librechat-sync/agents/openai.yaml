@@ -1,0 +1,4 @@
+interface:
+  display_name: "LibreChat Fork Sync"
+  short_description: "Integrate LibreChat and NEAR AI updates into our fork"
+  default_prompt: "Use $librechat-sync to update our LibreChat fork from LibreChat and NEAR AI while preserving our company customizations."

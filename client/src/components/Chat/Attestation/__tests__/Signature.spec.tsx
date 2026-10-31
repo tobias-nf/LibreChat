@@ -275,7 +275,7 @@ it('sends only the selected completion and disconnects the previous frame', asyn
   };
   setup([receipt, second]);
   const iframe = await openFrame();
-  await userEvent.click(screen.getByTestId('select-dropdown-button'));
+  await userEvent.click(screen.getByRole('combobox', { name: 'Completion ID' }));
   fireEvent.click(await screen.findByRole('option', { name: 'completion-2' }));
   const next = screen.getByTitle('NEAR AI Verification Center') as HTMLIFrameElement;
   expect(next).not.toBe(iframe);
