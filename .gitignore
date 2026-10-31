@@ -190,6 +190,9 @@ codedb.snapshot
 scripts/activity-labels/results/
 
 !e2e/lighthouse/librechat.yaml
+
+# Reproducible Docker setup for this fork; secrets remain in ignored .env.
+!docker-compose.override.yml
 /.lighthouse/
 /e2e/lighthouse/.test-results/
 /e2e/rum/.test-results/

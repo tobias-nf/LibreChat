@@ -15,3 +15,9 @@ docs
 
 # Ignore all hidden files
 .*
+
+# Local runtime mounts must not be copied into customized app images.
+/images
+/uploads
+/logs
+/skill
