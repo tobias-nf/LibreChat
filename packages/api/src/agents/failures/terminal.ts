@@ -8,6 +8,7 @@ import {
   getModelStreamFailure,
   resolveModelStreamError,
   getProviderErrorMessage,
+  resolveNearAIAttestationError,
 } from '../errors';
 import { getSafeErrorText, getSafeErrorMetadata, isOwnedAbortError } from '../../utils/errors';
 import { hasModelBoundContentProtection } from '../../middleware/modelBoundContent';
@@ -111,6 +112,7 @@ export function createTerminalRunErrorObserver({
 
       const { status } = getSafeErrorMetadata(upstreamModelError);
       const classifiedError =
+        resolveNearAIAttestationError(upstreamModelError) ??
         safelyResolveLangChainError(error) ??
         safelyResolveLangChainError(upstreamModelError) ??
         (status == null || status < 400

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider, createStore } from 'jotai';
-import { render, screen } from '@testing-library/react';
+import { render as renderUI, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { TMessage } from 'librechat-data-provider';
 import { siblingIdxFamily } from '~/components/Chat/Messages/Thread/state';
 import useThreadRows from '~/hooks/Messages/useThreadRows';
@@ -115,6 +116,15 @@ jest.mock('~/utils', () => ({
 }));
 
 import MessagesView from '../MessagesView';
+
+function render(ui: React.ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return renderUI(ui, {
+    wrapper: ({ children }) => (
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    ),
+  });
+}
 
 const messageTree = [
   {

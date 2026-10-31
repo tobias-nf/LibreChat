@@ -1,6 +1,11 @@
 const { maxWorkers, workerIdleMemoryLimit } = require('../config/jest.workers.cjs');
 
 const esModules = [
+  '@nearai/inference-sdk',
+  'hpke',
+  'ohttp-ts',
+  'bhttp-ts',
+  '@freedomofpress',
   'openid-client',
   'oauth4webapi',
   'jose',
@@ -35,7 +40,7 @@ module.exports = {
     '^openid-client$': '<rootDir>/test/__mocks__/openid-client.js',
   },
   transform: {
-    '\\.[jt]sx?$': [
+    '\\.[cm]?[jt]sx?$': [
       'babel-jest',
       {
         presets: [

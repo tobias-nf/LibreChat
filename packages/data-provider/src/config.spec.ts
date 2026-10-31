@@ -3281,3 +3281,15 @@ describe('DEPLOYMENT_ONLY_CONFIG_PATHS', () => {
     }
   });
 });
+
+describe('NEAR AI verification deadline', () => {
+  it('uses the cloud-ui example deadline by default and allows an override', () => {
+    expect(configSchema.shape.nearai.parse({})).toEqual({ verificationTimeoutMs: 45000 });
+    expect(configSchema.shape.nearai.parse({ verificationTimeoutMs: 1000 })).toEqual({
+      verificationTimeoutMs: 1000,
+    });
+  });
+  it.each([0, 999, 120001, 1.5])('rejects an invalid deadline %s', (verificationTimeoutMs) => {
+    expect(configSchema.shape.nearai.safeParse({ verificationTimeoutMs }).success).toBe(false);
+  });
+});
