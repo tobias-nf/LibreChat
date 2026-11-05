@@ -75,6 +75,7 @@ const variables = {
     JWT_SECRET: secrets.JWT_SECRET,
     JWT_REFRESH_SECRET: secrets.JWT_REFRESH_SECRET,
     NEARAI_API_KEY: local.NEARAI_API_KEY,
+    ANTHROPIC_MODELS: 'claude-opus-5-5,claude-sonnet-5-5,claude-haiku-5-5',
     IMAGE_GEN_OAI_API_KEY: '${{NEARAI_API_KEY}}',
     GOOGLE_CLIENT_ID: secrets.GOOGLE_CLIENT_ID ?? local.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: secrets.GOOGLE_CLIENT_SECRET ?? local.GOOGLE_CLIENT_SECRET,

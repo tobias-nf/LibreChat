@@ -17,6 +17,14 @@ GLM 5.3 Flash. `modelSpecs.prioritize: false` preserves a user's model choice.
 These are configuration settings; no application code changes are needed to
 change the list or add task-specific model presets later.
 
+The Railway service also sets `ANTHROPIC_MODELS` to Claude Opus 5.5, Sonnet 5.5,
+and Haiku 5.5. To enable the native Anthropic endpoint, add `ANTHROPIC_API_KEY`
+under **LibreChat → Variables** in the Railway pilot and deploy the variable
+change with the source revision that adds `anthropic` to `modelSpecs.addedEndpoints`.
+Keep the key in Railway. After the deployment is healthy, sign in as a pilot user,
+select each model, and send a short test prompt. Confirm the NEAR AI models still
+appear and the first-chat preset still uses NEAR AI.
+
 `CODE_EXECUTION_ENABLED=false` is the one intentional cloud feature difference:
 `infra/render-config.mjs` turns the analysis preset into ordinary NEAR AI chat and
 removes the code capability from the same canonical YAML until a separate KVM execution host is available. Local code

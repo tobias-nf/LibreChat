@@ -192,7 +192,7 @@ speech:
 
 modelSpecs:
   prioritize: false
-  addedEndpoints: [nearai]
+  addedEndpoints: [nearai, anthropic]
   list:
     - name: nearai-data-analysis
       softDefault: true
