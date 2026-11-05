@@ -1,0 +1,57 @@
+google:
+  google-gmail:
+    title: Gmail
+    type: streamable-http
+    url: https://gmailmcp.googleapis.com/mcp/v1
+    requiresOAuth: true
+    oauth:
+      <<: &googleOAuth
+        client_id: '${MCP_GOOGLE_CLIENT_ID}'
+        client_secret: '${MCP_GOOGLE_CLIENT_SECRET}'
+        authorization_url: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent
+        token_url: https://oauth2.googleapis.com/token
+        token_exchange_method: default_post
+        send_resource_parameter: false
+        revocation_endpoint: https://oauth2.googleapis.com/revoke
+      scope: https://www.googleapis.com/auth/gmail.readonly
+  google-calendar:
+    title: Google Calendar
+    type: streamable-http
+    url: https://calendarmcp.googleapis.com/mcp/v1
+    requiresOAuth: true
+    oauth:
+      <<: *googleOAuth
+      scope: >-
+        https://www.googleapis.com/auth/calendar.calendarlist.readonly
+        https://www.googleapis.com/auth/calendar.events.readonly
+        https://www.googleapis.com/auth/calendar.events.freebusy
+  google-drive:
+    title: Google Drive
+    type: streamable-http
+    url: https://drivemcp.googleapis.com/mcp/v1
+    requiresOAuth: true
+    oauth:
+      <<: *googleOAuth
+      scope: https://www.googleapis.com/auth/drive.readonly
+  google-sheets:
+    title: Google Sheets
+    type: streamable-http
+    url: https://sheetsmcp.googleapis.com/mcp/v1
+    requiresOAuth: true
+    oauth:
+      <<: *googleOAuth
+      scope: https://www.googleapis.com/auth/spreadsheets
+
+slack:
+  slack:
+    title: Slack
+    type: streamable-http
+    url: https://mcp.slack.com/mcp
+    requiresOAuth: true
+    oauth:
+      client_id: '${MCP_SLACK_CLIENT_ID}'
+      client_secret: '${MCP_SLACK_CLIENT_SECRET}'
+      authorization_url: https://slack.com/oauth/v2_user/authorize
+      token_url: https://slack.com/api/oauth.v2.user.access
+      token_exchange_method: default_post
+      scope: search:read.public channels:history

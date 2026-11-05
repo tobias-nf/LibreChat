@@ -25,6 +25,35 @@ Keep the key in Railway. After the deployment is healthy, sign in as a pilot use
 select each model, and send a short test prompt. Confirm the NEAR AI models still
 appear and the first-chat preset still uses NEAR AI.
 
+## Pilot connectors
+
+The cloud config renderer loads the remote servers in `mcp.yaml` when their
+provider's OAuth client ID and secret are present in Railway. Each tester signs in
+to their own account from **Attach and tools → MCP Servers**. The Google Workspace
+client is separate from the Google sign-in client.
+
+1. In the Google Cloud project, enable the Gmail, Calendar, Drive, and Sheets APIs
+   and their MCP services. Google Workspace MCP requires Developer Preview access.
+   Create an Internal Web OAuth client and select **Use this client for an
+   AI-powered agent**. Register a callback at `<origin>/api/mcp/<server>/oauth/callback`
+   for each of `google-gmail`, `google-calendar`, `google-drive`, and `google-sheets`.
+   Declare the Google OAuth scopes from `mcp.yaml` in Google Auth Platform.
+2. In the NEAR Foundation Slack workspace, use an internal app with the Slack MCP
+   server enabled. Register `<origin>/api/mcp/slack/oauth/callback` and add user
+   scopes `search:read.public` and `channels:history`.
+3. Put `MCP_GOOGLE_CLIENT_ID`, `MCP_GOOGLE_CLIENT_SECRET`, `MCP_SLACK_CLIENT_ID`,
+   and `MCP_SLACK_CLIENT_SECRET` in **LibreChat → Variables** on Railway. Deploy
+   the variable changes. A provider appears when both of its variables are set.
+
+For acceptance, use a disposable spreadsheet and two pilot accounts. Find the
+sheet with Drive, read a range with Sheets, approve a single-cell update, and read
+it back. Decline a second update and confirm the cell stays the same. Repeat with
+an account that has view-only access and then with an account without access.
+Check Gmail and Calendar reads and Slack public-channel search with the same
+per-user sign-in flow. Verify a reconnect after access is revoked.
+
+## Deployment details
+
 `CODE_EXECUTION_ENABLED=false` is the one intentional cloud feature difference:
 `infra/render-config.mjs` turns the analysis preset into ordinary NEAR AI chat and
 removes the code capability from the same canonical YAML until a separate KVM execution host is available. Local code
