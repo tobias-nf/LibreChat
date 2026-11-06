@@ -10,12 +10,14 @@ Shared app defaults are in `infra/runtime.env`, Google-only login policy in
 `infra/google-login.env`, and NEAR file-search settings in `infra/rag.env`.
 The optional `docker-compose.dev-auth.yml` never applies in Railway.
 
-The model selector exposes the `nearai` endpoint alongside the existing preset.
-Catalog fetching is disabled, so its selectable chat models are exactly the three
-entries in `endpoints.custom[].models.default`: Kimi K2.6, Qwen 3.8 27B, and
-GLM 5.3 Flash. `modelSpecs.prioritize: false` preserves a user's model choice.
-These are configuration settings; no application code changes are needed to
-change the list or add task-specific model presets later.
+The model selector offers DeepSeek V4.1 Flash 1017, Qwen 3.8 27B, and GLM 5.3
+Flash under `nearai`. Catalog fetching is disabled so the picker uses the three
+model IDs in `endpoints.custom[].models.default`. GLM 5.3 Flash is the initial
+chat default and generates conversation titles. `modelSpecs.prioritize: false`
+preserves a user's model choice.
+
+LibreChat calls `https://cloud-api.near.ai/v1` directly with the NEAR AI Cloud
+API key stored in the Railway service variable `NEARAI_API_KEY`.
 
 The Railway service also sets `ANTHROPIC_MODELS` to Claude Opus 5.5, Sonnet 5.5,
 and Haiku 5.5. To enable the native Anthropic endpoint, add `ANTHROPIC_API_KEY`

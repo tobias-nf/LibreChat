@@ -231,12 +231,12 @@ endpoints:
         streamUsage: true
       models:
         default:
-          - moonshotai/kimi-k2.6
+          - deepseek-ai/DeepSeek-V4.1-Flash-1017
           - Qwen/Qwen3.8-27B
           - z-ai/glm-5.3-flash
         fetch: false
       titleConvo: true
-      titleModel: moonshotai/kimi-k2.6
+      titleModel: z-ai/glm-5.3-flash
       modelDisplayLabel: NEAR AI Cloud
       tokenConfig:
         # BEGIN NEAR AI PRICING
